@@ -26,7 +26,7 @@ def save_seen_jobs(seen_jobs):
     with open(DATA_FILE, 'w', encoding='utf-8') as f:
         json.dump(seen_jobs, f, ensure_ascii=False, indent=4)
 
-def scrape_company_jobs(company_name, jobs_url, job_title_class, job_link_prefix=""):
+def scrape_company_jobs(company_name, jobs_url, job_title_class, job_link_prefix="", link_contains=""):
     """
     Scrapes a company's career page using Playwright to handle dynamic JavaScript loading.
     """
@@ -52,15 +52,13 @@ def scrape_company_jobs(company_name, jobs_url, job_title_class, job_link_prefix
     class_list = job_title_class.split()
     job_elements = soup.find_all('a', class_=class_list)
     
-    if not job_elements:
-        print(f"No jobs found for {company_name}. The class name might be wrong or the page structure changed.")
-        return
-
     seen_jobs = load_seen_jobs()
     new_jobs_found = False
 
     for job in job_elements:
         title = job.get_text(strip=True) or job.get('aria-label', '')
+        
+        # Clean up the "Learn more about " prefix if it exists
         if title.startswith("Learn more about "):
             title = title.replace("Learn more about ", "")
             
@@ -69,9 +67,15 @@ def scrape_company_jobs(company_name, jobs_url, job_title_class, job_link_prefix
         if not title or not link:
             continue
 
+        # Filter links based on the required text to avoid generic buttons (e.g., help links)
+        if link_contains and link_contains not in link:
+            continue
+
+        # Convert relative URLs to absolute URLs if needed
         if not link.startswith('http'):
             link = job_link_prefix.rstrip('/') + '/' + link.lstrip('/')
         
+        # Create a unique identifier to prevent duplicate alerts
         job_id = f"{company_name}_{title}"
         
         if job_id not in seen_jobs:

@@ -12,10 +12,10 @@ def main():
     targets = [
         {
             "company_name": "Google",
-            # We assume this is the base search URL based on the snippet
             "jobs_url": "https://www.google.com/about/careers/applications/jobs/results?location=Israel", 
             "job_title_class": "WpHeLc VfPpkd-mRLv6 VfPpkd-RLmnJb",
-            "job_link_prefix": "https://www.google.com/about/careers/applications/"
+            "job_link_prefix": "https://www.google.com/about/careers/applications/",
+            "link_contains": "jobs/results/" # Added filter to ensure it's a real job link
         }
     ]
     
@@ -24,7 +24,8 @@ def main():
             company_name=target["company_name"],
             jobs_url=target["jobs_url"],
             job_title_class=target["job_title_class"],
-            job_link_prefix=target.get("job_link_prefix", "")
+            job_link_prefix=target.get("job_link_prefix", ""),
+            link_contains=target.get("link_contains", "")
         )
         
     print("JobHunter finished running.")
