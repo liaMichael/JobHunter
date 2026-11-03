@@ -15,8 +15,17 @@ def main():
             "jobs_url": "https://www.google.com/about/careers/applications/jobs/results?location=Israel", 
             "job_title_class": "WpHeLc VfPpkd-mRLv6 VfPpkd-RLmnJb",
             "job_link_prefix": "https://www.google.com/about/careers/applications/",
-            "link_contains": "jobs/results/" # Added filter to ensure it's a real job link
+            "link_contains": "jobs/results/"
+        },
+        # Add the new company here
+        {
+            "company_name": "Amazon",
+            "jobs_url": "https://amazon.jobs/content/en/locations/israel/tel-aviv", 
+            "job_title_class": "header-module_desktop__Dnj66 header-module_title__9-W3R",
+            "job_link_prefix": "https://amazon.jobs",
+            "link_contains": "/jobs/"
         }
+        # You can add more companies using the same structure...
     ]
     
     for target in targets:

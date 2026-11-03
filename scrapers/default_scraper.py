@@ -32,17 +32,34 @@ def scrape_company_jobs(company_name, jobs_url, job_title_class, job_link_prefix
     """
     print(f"Starting scrape for {company_name}...")
     
+    html_content = ""
     try:
-        # Using Playwright to launch a headless browser and wait for network activity to finish
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
-            # wait_until='networkidle' ensures all dynamic JS scripts have finished loading
-            page.goto(jobs_url, wait_until='networkidle', timeout=60000)
+            
+            # Changed from 'networkidle' to 'domcontentloaded' to avoid infinite timeouts
+            page.goto(jobs_url, wait_until='domcontentloaded', timeout=60000)
+            
+            # Convert class name to a valid CSS selector (e.g., "class1 class2" -> ".class1.class2")
+            css_selector = "." + ".".join(job_title_class.split())
+            
+            # Wait explicitly for the job elements to render on the screen
+            try:
+                page.wait_for_selector(css_selector, timeout=20000)
+            except Exception:
+                print(f"Timeout waiting for job elements for {company_name}. The page might be empty or layout changed.")
+            
+            # Short additional wait to ensure lazy-loaded React elements finish rendering completely
+            page.wait_for_timeout(3000)
+            
             html_content = page.content()
             browser.close()
     except Exception as e:
         print(f"Error fetching URL for {company_name} with Playwright: {e}")
+        return
+
+    if not html_content:
         return
 
     # Parse the fully rendered HTML
@@ -67,7 +84,7 @@ def scrape_company_jobs(company_name, jobs_url, job_title_class, job_link_prefix
         if not title or not link:
             continue
 
-        # Filter links based on the required text to avoid generic buttons (e.g., help links)
+        # Filter links based on the required text to avoid generic buttons
         if link_contains and link_contains not in link:
             continue
 
