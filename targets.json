@@ -111,7 +111,8 @@
         "jobs_url": "https://campusjobs.mlp.com/careers?location=Tel%20Aviv%2C%20Israel&pid=755957778856&campusSkillset=engineering%20and%20ai&domain=mlp.com&sort_by=relevance&triggerGoButton=false",
         "job_container_class": "position-title",
         "job_link_prefix": "",
-        "link_contains": ""
+        "link_contains": "",
+        "wait_until": "networkidle"
     },
     {
         "company_name": "Siemens",

@@ -1,5 +1,4 @@
 import os
-import json
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 import sys
@@ -9,25 +8,7 @@ import re
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from notifiers.telegram_api import send_job_alert
 
-DATA_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "seen_jobs.json")
-
-def load_seen_jobs():
-    """Loads the list of already seen jobs from the JSON file."""
-    if not os.path.exists(DATA_FILE):
-        return []
-    with open(DATA_FILE, 'r', encoding='utf-8') as f:
-        try:
-            return json.load(f)
-        except json.JSONDecodeError:
-            return []
-
-def save_seen_jobs(seen_jobs):
-    """Saves the updated list of seen jobs to the JSON file."""
-    os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
-    with open(DATA_FILE, 'w', encoding='utf-8') as f:
-        json.dump(seen_jobs, f, ensure_ascii=False, indent=4)
-
-def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", keywords=None, popup_selector=None, inner_title_selector=None):
+def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", keywords=None, popup_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None):
     """
     Scrapes a company's career page using Playwright to handle dynamic JavaScript loading.
     """
@@ -52,8 +33,8 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
             # 3. Inject a script to erase the 'webdriver' fingerprint before Rafael can see it
             page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
             
-            # Changed from 'networkidle' to 'domcontentloaded' to avoid infinite timeouts
-            page.goto(jobs_url, wait_until='domcontentloaded', timeout=60000)
+            # Uses the dynamic wait mode (networkidle for SPAs, domcontentloaded for the rest)
+            page.goto(jobs_url, wait_until=wait_until_mode, timeout=60000)
 
             # Handle popups/cookie banners if a selector is provided
             if popup_selector:
@@ -93,7 +74,6 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
     # 1. Find standard links, nested links, or container div itself
     job_elements = soup.select(f"a{css_selector}, {css_selector} a, {css_selector}")
     
-    seen_jobs = load_seen_jobs()
     new_jobs_found = False
 
     for job in job_elements:
@@ -164,14 +144,25 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
         # Create a unique identifier to prevent duplicate alerts
         job_id = f"{company_name}_{title}"
         
-        if job_id not in seen_jobs:
+        # Check if the job already exists in the database
+        is_seen = False
+        if db_collection is not None:
+            is_seen = db_collection.find_one({"_id": job_id}) is not None
+
+        if not is_seen:
             print(f"New job found: {title}")
             send_job_alert(title, full_link, company_name)
-            seen_jobs.append(job_id)
+            
+            # Insert the new job into MongoDB
+            if db_collection is not None:
+                db_collection.insert_one({
+                    "_id": job_id,
+                    "company": company_name,
+                    "title": title
+                })
             new_jobs_found = True
         
     if new_jobs_found:
-        save_seen_jobs(seen_jobs)
-        print(f"Finished scrape for {company_name}: New jobs were added and saved.")
+        print(f"Finished scrape for {company_name}: New jobs were added to the database.")
     else:
         print(f"Finished scrape for {company_name}: No new jobs found.")

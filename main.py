@@ -2,6 +2,7 @@ import os
 import sys
 import json
 from dotenv import load_dotenv
+from pymongo import MongoClient
 from scrapers.default_scraper import scrape_company_jobs
 from notifiers.telegram_api import process_telegram_commands, load_preferences
 
@@ -12,9 +13,20 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv()
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
+MONGO_URI = os.getenv("MONGO_URI")
 
 def main():
     print("Starting JobHunter...")
+
+    # Initialize MongoDB connection
+    if MONGO_URI:
+        client = MongoClient(MONGO_URI)
+        db = client["jobhunter_db"]
+        seen_jobs_collection = db["seen_jobs"]
+        print("Successfully connected to MongoDB.")
+    else:
+        print("\033[93mWarning: MONGO_URI not found. Running without database.\033[0m")
+        seen_jobs_collection = None
 
     # Process Telegram commands and update preferences before scraping
     if TELEGRAM_TOKEN and CHAT_ID:
@@ -37,7 +49,11 @@ def main():
             job_container_class=target["job_container_class"],
             job_link_prefix=target.get("job_link_prefix", ""),
             link_contains=target.get("link_contains", ""),
-            keywords=keywords  # <-- Pass the keywords to the scraper
+            keywords=keywords,
+            popup_selector=target.get("popup_selector"),
+            inner_title_selector=target.get("inner_title_selector"),
+            wait_until_mode=target.get("wait_until", "domcontentloaded"),
+            db_collection=seen_jobs_collection  # Pass the MongoDB collection to the scraper
         )
         
     print("JobHunter finished running.")
