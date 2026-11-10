@@ -1,0 +1,144 @@
+[
+    {
+        "company_name": "Google",
+        "jobs_url": "https://www.google.com/about/careers/applications/jobs/results?location=Israel",
+        "job_container_class": "WpHeLc VfPpkd-mRLv6 VfPpkd-RLmnJb",
+        "job_link_prefix": "https://www.google.com/about/careers/applications",
+        "link_contains": "jobs/results/"
+    },
+    {
+        "company_name": "Amazon",
+        "jobs_url": "https://amazon.jobs/content/en/locations/israel/tel-aviv",
+        "job_container_class": "header-module_desktop__Dnj66 header-module_title__9-W3R",
+        "job_link_prefix": "https://amazon.jobs/en",
+        "link_contains": "/jobs/"
+    },
+    {
+        "company_name": "Amazon Annapurna Labs",
+        "jobs_url": "https://amazon.jobs/content/en/teams/annapurna-labs?country%5B%5D=IL#search",
+        "job_container_class": "header-module_title__9-W3R",
+        "job_link_prefix": "https://amazon.jobs/en",
+        "link_contains": "/jobs/"
+    },
+    {
+        "company_name": "Intel",
+        "jobs_url": "https://intel.wd1.myworkdayjobs.com/External?locations=1e4a4eb3adf101ad7f35e278bf812cd1&locations=1e4a4eb3adf101aaeda8a474bf818ecd&locations=1e4a4eb3adf101f41cd29774bf8184cd&locations=1e4a4eb3adf1013563ba9174bf817fcd&locations=6dc05d901d65100158f5ba48aafb0000&locations=1e4a4eb3adf101cb242c9e74bf8189cd",
+        "job_container_class": "css-19uc56f",
+        "job_link_prefix": "https://intel.wd1.myworkdayjobs.com",
+        "link_contains": "/job/"
+    },
+    {
+        "company_name": "SAP",
+        "jobs_url": "https://jobs.sap.com/en/jobs/?country=Israel",
+        "job_container_class": "text-job-card-title",
+        "job_link_prefix": "https://jobs.sap.com",
+        "link_contains": "/jobs/",
+        "popup_selector": "#truste-consent-button"
+    },
+    {
+        "company_name": "Microsoft",
+        "jobs_url": "https://apply.careers.microsoft.com/careers?hl=en&start=0&location=Israel&pid=1970393557038901&sort_by=distance&filter_include_remote=1&filter_include_relocation=0",
+        "job_container_class": "title-1aNJK",
+        "job_link_prefix": "https://apply.careers.microsoft.com",
+        "link_contains": "/careers/job/"
+    },
+    {
+        "company_name": "NVIDIA",
+        "jobs_url": "https://jobs.nvidia.com/careers?domain=nvidia.com&hl=he&start=0&location=Israel&pid=893393561562&sort_by=timestamp&filter_include_remote=1&filter_include_relocation=0",
+        "job_container_class": "title-1aNJK",
+        "job_link_prefix": "https://jobs.nvidia.com",
+        "link_contains": "/careers/job/"
+    },
+    {
+        "company_name": "Apple",
+        "jobs_url": "https://jobs.apple.com/en-il/search?location=israel-ISR",
+        "job_container_class": "link-inline t-intro word-wrap-break-word more",
+        "job_link_prefix": "https://jobs.apple.com",
+        "link_contains": "/details/"
+    },
+    {
+        "company_name": "IAI",
+        "jobs_url": "https://jobs.iai.co.il/jobs/",
+        "job_container_class": "vue-job job-card",
+        "job_link_prefix": "https://jobs.iai.co.il",
+        "link_contains": "/job/"
+    },
+    {
+        "company_name": "Elbit Systems",
+        "jobs_url": "https://elbitsystemscareer.com/jobs/",
+        "job_container_class": "MuiCard-root",
+        "job_link_prefix": "https://elbitsystemscareer.com",
+        "link_contains": ""
+    },
+    {
+        "company_name": "WeDev",
+        "jobs_url": "https://job-boards.eu.greenhouse.io/wedev?gh_src=wp878wt2teu",
+        "job_container_class": "body--medium",
+        "job_link_prefix": "https://job-boards.eu.greenhouse.io",
+        "link_contains": "/jobs/"
+    },
+    {
+        "company_name": "Earnix",
+        "jobs_url": "https://earnix.com/our-story/careers/israel/#open-positions",
+        "job_container_class": "typo-h4",
+        "job_link_prefix": "https://earnix.com",
+        "link_contains": "/career/"
+    },
+    {
+        "company_name": "Ness Technologies",
+        "jobs_url": "https://www.ness-tech.co.il/careers/",
+        "job_container_class": "card-job-container",
+        "inner_title_selector": "ul > li:nth-of-type(2)",
+        "job_link_prefix": "https://www.ness-tech.co.il/careers",
+        "link_contains": ""
+    },
+    {
+        "company_name": "Marvell Technology",
+        "jobs_url": "https://marvell.wd1.myworkdayjobs.com/MarvellCareers/2/refreshFacet/318c8bb6f553100021d223d9780d30be",
+        "job_container_class": "gwt-Label",
+        "job_link_prefix": "",
+        "link_contains": ""
+    },
+    {
+        "company_name": "Taboola",
+        "jobs_url": "https://www.taboola.com/careers/jobs#team=&location=18982,18967",
+        "job_container_class": "font-weight-bold ng-binding",
+        "job_link_prefix": "",
+        "link_contains": ""
+    },
+    {
+        "company_name": "Millennium",
+        "jobs_url": "https://campusjobs.mlp.com/careers?location=Tel%20Aviv%2C%20Israel&pid=755957778856&campusSkillset=engineering%20and%20ai&domain=mlp.com&sort_by=relevance&triggerGoButton=false",
+        "job_container_class": "position-title",
+        "job_link_prefix": "",
+        "link_contains": ""
+    },
+    {
+        "company_name": "Siemens",
+        "jobs_url": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs/?42414=%5B811993%5D&42414_format=17570&listFilterMode=1&folderRecordsPerPage=6&",
+        "job_container_class": "link",
+        "job_link_prefix": "",
+        "link_contains": ""
+    },
+    {
+        "company_name": "Forter",
+        "jobs_url": "https://www.forter.com/job-opportunities/?_gl=1*aivvup*_up*MQ..*_ga*MTc4OTM0MTc1LjE3OTQyMTQ1NTI.*_ga_X5FEEHQK5P*czE3OTQyMTQ1NTEkbzEkZzAkdDE3OTQyMTQ1NTEkajYwJGwwJGgw",
+        "job_container_class": "text-sm tracking-widest uppercase font-secondary font-medium text-forter-gray-4 hover:text-forter-blue group",
+        "job_link_prefix": "",
+        "link_contains": ""
+    },
+    {
+        "company_name": "MKS",
+        "jobs_url": "https://mksinst.wd1.myworkdayjobs.com/he-IL/MKSCareersEMEA?locationCountry=084562884af243748dad7c84c304d89a",
+        "job_container_class": "css-19uc56f",
+        "job_link_prefix": "https://mksinst.wd1.myworkdayjobs.com",
+        "link_contains": ""
+    },
+    {
+        "company_name": "Altera",
+        "jobs_url": "https://altera.wd1.myworkdayjobs.com/en-US/Altera?source=LinkedIn&locations=7a5690ab19831000af4c64f9efec0000&locations=7a5690ab19831000af4c40dc3eba0000",
+        "job_container_class": "css-19uc56f",
+        "job_link_prefix": "https://altera.wd1.myworkdayjobs.com",
+        "link_contains": ""
+    }
+]

@@ -27,7 +27,7 @@ def save_seen_jobs(seen_jobs):
     with open(DATA_FILE, 'w', encoding='utf-8') as f:
         json.dump(seen_jobs, f, ensure_ascii=False, indent=4)
 
-def scrape_company_jobs(company_name, jobs_url, job_title_class, job_link_prefix="", link_contains="", keywords=None, popup_selector=None):
+def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", keywords=None, popup_selector=None, inner_title_selector=None):
     """
     Scrapes a company's career page using Playwright to handle dynamic JavaScript loading.
     """
@@ -65,7 +65,7 @@ def scrape_company_jobs(company_name, jobs_url, job_title_class, job_link_prefix
                     pass # Popup didn't appear, move on smoothly
             
             # Convert class name to a valid CSS selector (e.g., "class1 class2" -> ".class1.class2")
-            css_selector = "." + ".".join(job_title_class.split())
+            css_selector = "." + ".".join(job_container_class.split())
             
             # Wait explicitly for the job elements to render on the screen
             try:
@@ -123,9 +123,14 @@ def scrape_company_jobs(company_name, jobs_url, job_title_class, job_link_prefix
                 if match:
                     href = f"/{match.group(1)}"
         
-        # Smart title extraction (Elbit: h3, NGsoft: h2, Ness: .il-title)
-        title_element = job.find(class_='il-title') or job.find('h3') or job.find('h2')
-        title = title_element.get_text(strip=True) if title_element else job.get_text(strip=True)
+        # Smart title extraction utilizing the new inner_title_selector
+        if inner_title_selector:
+            title_element = job.select_one(inner_title_selector)
+            title = title_element.get_text(strip=True) if title_element else job.get_text(strip=True)
+        else:
+            # Fallback to standard extraction (Elbit: h3, NGsoft: h2, Ness: .il-title)
+            title_element = job.find(class_='il-title') or job.find('h3') or job.find('h2')
+            title = title_element.get_text(strip=True) if title_element else job.get_text(strip=True)
         
         # Clean up the "Learn more about " prefix if it exists
         if title.startswith("Learn more about "):
