@@ -2,9 +2,11 @@
     {
         "company_name": "Google",
         "jobs_url": "https://www.google.com/about/careers/applications/jobs/results?location=Israel",
-        "job_container_class": "WpHeLc VfPpkd-mRLv6 VfPpkd-RLmnJb",
-        "job_link_prefix": "https://www.google.com/about/careers/applications",
-        "link_contains": "jobs/results/"
+        "job_container_class": "lLd3Je",
+        "inner_title_selector": "h3",
+        "job_link_prefix": "https://www.google.com/about/careers/applications/",
+        "link_contains": "jobs/results/",
+        "wait_until": "networkidle"
     },
     {
         "company_name": "Amazon",
@@ -37,17 +39,21 @@
     },
     {
         "company_name": "Microsoft",
-        "jobs_url": "https://apply.careers.microsoft.com/careers?hl=en&start=0&location=Israel&pid=1970393557038901&sort_by=distance&filter_include_remote=1&filter_include_relocation=0",
-        "job_container_class": "title-1aNJK",
+        "jobs_url": "https://apply.careers.microsoft.com/careers?hl=en&location=Israel&filter_include_remote=1&filter_include_relocation=0",
+        "job_container_class": "cardContainer-GcY1a",
+        "inner_title_selector": ".title-1aNJK",
         "job_link_prefix": "https://apply.careers.microsoft.com",
-        "link_contains": "/careers/job/"
+        "link_contains": "/careers/job/",
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "NVIDIA",
-        "jobs_url": "https://jobs.nvidia.com/careers?domain=nvidia.com&hl=he&start=0&location=Israel&pid=893393561562&sort_by=timestamp&filter_include_remote=1&filter_include_relocation=0",
-        "job_container_class": "title-1aNJK",
+        "jobs_url": "https://jobs.nvidia.com/careers?domain=nvidia.com&hl=he&location=Israel&filter_include_remote=1&filter_include_relocation=0",
+        "job_container_class": "cardContainer-GcY1a",
+        "inner_title_selector": ".title-1aNJK",
         "job_link_prefix": "https://jobs.nvidia.com",
-        "link_contains": "/careers/job/"
+        "link_contains": "/careers/job/",
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "Apple",
@@ -66,9 +72,11 @@
     {
         "company_name": "Elbit Systems",
         "jobs_url": "https://elbitsystemscareer.com/jobs/",
-        "job_container_class": "MuiCard-root",
-        "job_link_prefix": "https://elbitsystemscareer.com",
-        "link_contains": ""
+        "job_container_class": "css-8g9nvw",
+        "inner_title_selector": "h3",
+        "job_link_prefix": "https://elbitsystemscareer.com/job",
+        "link_contains": "jid=",
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "WeDev",
@@ -80,39 +88,45 @@
     {
         "company_name": "Earnix",
         "jobs_url": "https://earnix.com/our-story/careers/israel/#open-positions",
-        "job_container_class": "typo-h4",
+        "job_container_class": "block",
+        "inner_title_selector": ".typo-h4",
         "job_link_prefix": "https://earnix.com",
-        "link_contains": "/career/"
+        "link_contains": "/career/",
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "Ness Technologies",
         "jobs_url": "https://www.ness-tech.co.il/careers/",
         "job_container_class": "card-job-container",
-        "inner_title_selector": "ul > li:nth-of-type(2)",
-        "job_link_prefix": "https://www.ness-tech.co.il/careers",
-        "link_contains": ""
+        "inner_title_selector": "ul li:nth-child(2)",
+        "job_link_prefix": "https://www.ness-tech.co.il/careers/job",
+        "link_contains": "",
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "Marvell Technology",
-        "jobs_url": "https://marvell.wd1.myworkdayjobs.com/MarvellCareers/2/refreshFacet/318c8bb6f553100021d223d9780d30be",
-        "job_container_class": "gwt-Label",
-        "job_link_prefix": "",
-        "link_contains": ""
+        "jobs_url": "https://marvell.wd1.myworkdayjobs.com/MarvellCareers",
+        "job_container_class": "css-19uc56f",
+        "job_link_prefix": "https://marvell.wd1.myworkdayjobs.com",
+        "wait_until": "networkidle"
     },
     {
         "company_name": "Taboola",
-        "jobs_url": "https://www.taboola.com/careers/jobs#team=&location=18982,18967",
-        "job_container_class": "font-weight-bold ng-binding",
-        "job_link_prefix": "",
-        "link_contains": ""
+        "jobs_url": "https://www.taboola.com/careers/jobs#team=&location=18982,18967,23621",
+        "job_container_class": "table-row",
+        "inner_title_selector": "h2",
+        "job_link_prefix": "https://www.taboola.com",
+        "link_contains": "/careers/job/",
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "Millennium",
-        "jobs_url": "https://campusjobs.mlp.com/careers?location=Tel%20Aviv%2C%20Israel&pid=755957778856&campusSkillset=engineering%20and%20ai&domain=mlp.com&sort_by=relevance&triggerGoButton=false",
-        "job_container_class": "position-title",
-        "job_link_prefix": "",
+        "jobs_url": "https://campusjobs.mlp.com/careers?domain=mlp.com",
+        "job_container_class": "position-card",
+        "inner_title_selector": ".position-title",
+        "job_link_prefix": "https://campusjobs.mlp.com/careers/job",
         "link_contains": "",
-        "wait_until": "networkidle"
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "Siemens",
