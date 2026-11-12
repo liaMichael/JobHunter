@@ -155,5 +155,32 @@
         "job_container_class": "css-19uc56f",
         "job_link_prefix": "https://altera.wd1.myworkdayjobs.com",
         "link_contains": ""
+    },
+    {
+        "company_name": "OriginAI",
+        "jobs_url": "https://www.originai.co/careers/",
+        "job_container_class": "x-accordion_header",
+        "inner_title_selector": ".x-accordion_title",
+        "job_link_prefix": "",
+        "link_contains": "",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "HP",
+        "jobs_url": "https://apply.hp.com/careers?location=Israel",
+        "job_container_class": "cardContainer-GcY1a",
+        "inner_title_selector": ".title-1aNJK",
+        "job_link_prefix": "https://apply.hp.com",
+        "link_contains": "/careers/job/",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "IBM",
+        "jobs_url": "https://www.ibm.com/careers/search?field_keyword_05[0]=Israel",
+        "job_container_class": "bx--card-group__card",
+        "inner_title_selector": ".bx--card__heading",
+        "job_link_prefix": "",
+        "link_contains": "JobDetail",
+        "wait_until": "domcontentloaded"
     }
 ]
