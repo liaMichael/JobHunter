@@ -1,4 +1,3 @@
-# api/webhook.py
 import os
 import requests
 from flask import Flask, request
@@ -9,9 +8,9 @@ TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
 MONGO_URI = os.environ.get("MONGO_URI")
 
-# חיבור ל-MongoDB
+# Connect to MongoDB
 client = MongoClient(MONGO_URI)
-db = client.get_database("jobhunter") # ודאי שזה שם ה-DB שלך
+db = client.get_database("jobhunter_db")
 prefs_collection = db.get_collection("preferences")
 
 def get_keywords():
@@ -29,14 +28,14 @@ def webhook():
         text = update["message"]["text"].strip().lower()
         chat_id = str(update["message"]["chat"]["id"])
         
-        # אבטחה: מוודא שרק את יכולה להפעיל פקודות
+        # Security: Ensure only the authorized user can execute commands
         if chat_id != CHAT_ID:
             return "Unauthorized", 403
 
         keywords = set(get_keywords())
         reply_text = ""
 
-        # עיבוד פקודות
+        # Process commands
         if text.startswith("/add "):
             word = text.replace("/add ", "").strip()
             keywords.add(word)
@@ -62,7 +61,7 @@ def webhook():
                 f"📝 <b>מילות המפתח שלך:</b> {current_words}"
             )
         
-        # שליחת תשובה לטלגרם
+        # Send reply to Telegram
         if reply_text:
             requests.post(
                 f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
