@@ -8,7 +8,7 @@ import re
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from notifiers.telegram_api import send_job_alert
 
-def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", keywords=None, popup_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None):
+def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", keywords=None, popup_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None):
     """
     Scrapes a company's career page using Playwright to handle dynamic JavaScript loading.
     """
@@ -44,6 +44,47 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                     page.wait_for_timeout(2000) # Wait for the popup to close and jobs to load
                 except Exception:
                     pass # Popup didn't appear, move on smoothly
+
+            # Generic Redirect Fix: If the site redirected us away from the target URL, navigate back
+            if page.url != jobs_url:
+                page.goto(jobs_url, wait_until=wait_until_mode, timeout=60000)
+                page.wait_for_timeout(3000)
+            
+            # --- DYNAMIC UI FILTER CLICKS (Driven entirely by targets.json) ---
+            if filter_clicks:
+                for step in filter_clicks:
+                    try:
+                        action = step.get("action")
+                        selector = step.get("selector")
+                        text = step.get("text")
+                        
+                        if action == "click":
+                            # Standard click with text matching
+                            btn = page.locator(selector, has_text=text).first
+                            btn.wait_for(state="visible", timeout=10000)
+                            btn.click()
+                            page.wait_for_timeout(1500)
+                            
+                        elif action == "js_click":
+                            # JS click for elements hidden under animations/dropdowns
+                            btn = page.locator(selector, has_text=text).first
+                            btn.wait_for(state="attached", timeout=5000)
+                            page.evaluate("(element) => element.click()", btn.element_handle())
+                            page.wait_for_timeout(2000)
+                            
+                        elif action == "click_all_suboptions":
+                            # Click all items in an active sub-menu (like cities)
+                            city_buttons = page.locator(selector).all()
+                            if city_buttons:
+                                for city_btn in city_buttons:
+                                    page.evaluate("(element) => element.click()", city_btn.element_handle())
+                                    page.wait_for_timeout(500)
+                                page.wait_for_timeout(3000) # Wait for React/Vue to render
+                                
+                    except Exception as e:
+                        print(f"Note: Filter step failed ({step.get('description', '')}): {e}")
+            else:
+                pass
             
             # Convert class name to a valid CSS selector and escape Tailwind colons (e.g., hover:text-blue -> hover\:text-blue)
             css_selector = "." + ".".join(job_container_class.split()).replace(":", r"\:")
@@ -75,8 +116,14 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                         break
                         
             except Exception:
-                # Print timeout error in red
-                print(f"\033[91mTimeout waiting for job elements for {company_name}.\033[0m")
+                # Fallback: If wait_for_selector timed out, check if the elements are actually present in the DOM anyway
+                fallback_html = page.content()
+                if css_selector.replace("\\", "") in fallback_html:
+                    # Elements exist! Just grab the content silently without printing a scary red timeout error
+                    html_content += fallback_html
+                else:
+                    # Truly failed to find anything
+                    print(f"\033[91mTimeout waiting for job elements for {company_name}.\033[0m")
             
             # Fallback if no HTML was accumulated (or for non-paginated single-page sites)
             if not html_content:

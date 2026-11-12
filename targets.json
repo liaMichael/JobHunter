@@ -108,7 +108,7 @@
         "jobs_url": "https://marvell.wd1.myworkdayjobs.com/MarvellCareers",
         "job_container_class": "css-19uc56f",
         "job_link_prefix": "https://marvell.wd1.myworkdayjobs.com",
-        "wait_until": "networkidle"
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "Taboola",
@@ -131,9 +131,11 @@
     {
         "company_name": "Siemens",
         "jobs_url": "https://jobs.siemens.com/en_US/externaljobs/SearchJobs/?42414=%5B811993%5D&42414_format=17570&listFilterMode=1&folderRecordsPerPage=6&",
-        "job_container_class": "link",
+        "job_container_class": "article__header__text__title",
         "job_link_prefix": "",
-        "link_contains": ""
+        "link_contains": "/JobDetail/",
+        "inner_title_selector": "a",
+        "wait_until": "networkidle"
     },
     {
         "company_name": "Forter",
@@ -182,5 +184,40 @@
         "job_link_prefix": "",
         "link_contains": "JobDetail",
         "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Check Point",
+        "jobs_url": "https://careers.checkpoint.com/jobs?country=Israel",
+        "job_container_class": "css-5b9yip",
+        "job_link_prefix": "https://careers.checkpoint.com",
+        "link_contains": "/jobs/",
+        "inner_title_selector": "a.css-ryfkhy"
+    },
+    {
+        "company_name": "Mobileye",
+        "jobs_url": "https://careers.mobileye.com/jobs",
+        "job_container_class": "jobItem",
+        "job_link_prefix": "https://careers.mobileye.com",
+        "link_contains": "/jobs/",
+        "inner_title_selector": "p.jobTitle",
+        "filter_clicks": [
+            {
+            "action": "click",
+            "selector": "button.toggleBtn",
+            "text": "Location",
+            "description": "Open Location dropdown"
+            },
+            {
+            "action": "js_click",
+            "selector": "button.optionBtn",
+            "text": "Israel",
+            "description": "Click Israel filter option"
+            },
+            {
+            "action": "click_all_suboptions",
+            "selector": ".subOptionsWrapper.active button.subOptionItem",
+            "description": "Click all Israeli city sub-options"
+            }
+        ]
     }
 ]

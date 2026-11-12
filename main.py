@@ -51,7 +51,8 @@ def main():
             popup_selector=target.get("popup_selector"),
             inner_title_selector=target.get("inner_title_selector"),
             wait_until_mode=target.get("wait_until", "domcontentloaded"),
-            db_collection=seen_jobs_collection
+            db_collection=seen_jobs_collection,
+            filter_clicks=target.get("filter_clicks")
         )
         
     print("JobHunter finished running.")
