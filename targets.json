@@ -219,5 +219,162 @@
             "description": "Click all Israeli city sub-options"
             }
         ]
+    },
+    {
+        "company_name": "Palo Alto Networks",
+        "jobs_url": "https://jobs.paloaltonetworks.com/en/search-jobs/Israel/47263/2/294640/31x5/34x75/50/1",
+        "job_container_class": "section29__search-results-link",
+        "job_link_prefix": "https://jobs.paloaltonetworks.com",
+        "link_contains": "/en/job/",
+        "inner_title_selector": "h2.section29__search-results-job-title",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Moovit",
+        "jobs_url": "https://moovit.com/careers/co/ness-ziona-israel/all/",
+        "job_container_class": "job-name",
+        "job_link_prefix": "",
+        "link_contains": "/careers/",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Amdocs",
+        "jobs_url": "https://jobs.amdocs.com/careers?location=Israel",
+        "job_container_class": "cardListItem-3iAXI",
+        "job_link_prefix": "https://jobs.amdocs.com",
+        "link_contains": "/careers/job/",
+        "inner_title_selector": "div[class*='title-']",
+        "wait_until": "networkidle"
+    },
+    {
+        "company_name": "Applied Materials",
+        "jobs_url": "https://careers.appliedmaterials.com/careers?location=Israel",
+        "job_container_class": "cardListItem-3iAXI",
+        "job_link_prefix": "https://careers.appliedmaterials.com",
+        "link_contains": "/careers/job/",
+        "inner_title_selector": "div[class*='title-']",
+        "wait_until": "networkidle"
+    },
+    {
+        "company_name": "AppsFlyer",
+        "jobs_url": "https://careers.appsflyer.com/herzliya/",
+        "job_container_class": "hritem",
+        "job_link_prefix": "",
+        "link_contains": "greenhouse.io",
+        "inner_title_selector": ".titleC span",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Cisco",
+        "jobs_url": "https://careers.cisco.com/global/en/search-results",
+        "job_container_class": "phw-td-none phw-line-clamp",
+        "job_link_prefix": "",
+        "link_contains": "/job/",
+        "inner_title_selector": "",
+        "wait_until": "domcontentloaded",
+        "filter_clicks": [
+            {
+                "action": "js_click",
+                "selector": "button#CountryorRegionAccordion",
+                "text": "Country or Region",
+                "description": "Open Country filter dropdown via JS to bypass overlays"
+            },
+            {
+                "action": "js_click",
+                "selector": ".phw-check-label",
+                "text": "Israel",
+                "description": "Select Israel dynamically via JS"
+            }
+        ]
+    },
+    {
+        "company_name": "Dell",
+        "jobs_url": "https://enterpriseplatform.dell.com/hcmUI/CandidateExperience/en/sites/careers/jobs?location=Israel",
+        "job_container_class": "job-list-item",
+        "job_link_prefix": "",
+        "link_contains": "/job/",
+        "inner_title_selector": ".job-tile__title",
+        "wait_until": "networkidle"
+    },
+    {
+        "company_name": "Oracle",
+        "jobs_url": "https://careers.oracle.com/en/sites/jobsearch/jobs?location=Israel",
+        "job_container_class": "job-grid-item",
+        "job_link_prefix": "",
+        "link_contains": "/job/",
+        "inner_title_selector": ".job-tile__title",
+        "wait_until": "networkidle"
+    },
+    {
+        "company_name": "Lenovo",
+        "jobs_url": "https://jobs.lenovo.com/en_US/careers/SearchJobs/?13042=%5B12016678%5D&13042_format=6627&listFilterMode=1&jobRecordsPerPage=10&",
+        "job_container_class": "article__header__text__title",
+        "job_link_prefix": "",
+        "link_contains": "/JobDetail/",
+        "inner_title_selector": "a",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Samsung",
+        "jobs_url": "https://sec.wd3.myworkdayjobs.com/Samsung_Careers?locations=189767dd6c9201a82e8a307da5299d6f&locations=189767dd6c92013c2fa62e7fa5291272",
+        "job_container_class": "css-1q2dra3",
+        "job_link_prefix": "https://sec.wd3.myworkdayjobs.com",
+        "link_contains": "/job/",
+        "inner_title_selector": "a[data-automation-id='jobTitle']",
+        "wait_until": "networkidle"
+    },
+    {
+        "company_name": "Thales",
+        "jobs_url": "https://careers.thalesgroup.com/global/en/search-results?qcountry=Israel",
+        "job_container_class": "jobs-list-item",
+        "job_link_prefix": "",
+        "link_contains": "/job/",
+        "inner_title_selector": ".job-title",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Stratasys",
+        "jobs_url": "https://careers.stratasys.com/search/?locationsearch=Israel",
+        "job_container_class": "data-row",
+        "job_link_prefix": "https://careers.stratasys.com",
+        "link_contains": "/job/",
+        "inner_title_selector": ".jobTitle-link",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Wix",
+        "jobs_url": "https://careers.wix.com/positions?locations=tel-aviv%2Cbeer-sheva",
+        "job_container_class": "comp-mopq6bcy8",
+        "job_link_prefix": "",
+        "link_contains": "/position/oracle-",
+        "inner_title_selector": ".font_3",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Meta",
+        "jobs_url": "https://www.metacareers.com/jobsearch/?q=israel&sort_by_new=true&offices[0]=Tel%20Aviv%2C%20Israel",
+        "job_container_class": "x1i10hfl",
+        "job_link_prefix": "https://www.metacareers.com",
+        "link_contains": "/profile/job_details/",
+        "inner_title_selector": "h3",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "MalamTeam",
+        "jobs_url": "https://career.malamteam.com/%D7%A8%D7%A9%D7%99%D7%9E%D7%AA-%D7%9E%D7%A9%D7%A8%D7%95%D7%AA/",
+        "job_container_class": "job-item-container",
+        "job_link_prefix": "https://career.malamteam.com",
+        "link_contains": "/%d7%a2%d7%9e%d7%95%d7%93-%d7%9e%d7%a9%d7%a8%d7%94/?jid=",
+        "inner_title_selector": "h2.job-name",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "monday.com",
+        "jobs_url": "https://monday.com/careers?location=telaviv",
+        "job_container_class": "position-container",
+        "job_link_prefix": "https://monday.com",
+        "link_contains": "/careers/",
+        "inner_title_selector": ".position-name",
+        "wait_until": "domcontentloaded"
     }
 ]

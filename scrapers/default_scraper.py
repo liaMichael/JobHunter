@@ -8,7 +8,7 @@ import re
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from notifiers.telegram_api import send_job_alert
 
-def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", keywords=None, popup_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None):
+def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", keywords=None, popup_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None, headless=True):
     """
     Scrapes a company's career page using Playwright to handle dynamic JavaScript loading.
     """
@@ -19,7 +19,7 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
         with sync_playwright() as p:
             # Launch with arguments that hide automation flags from WAFs
             browser = p.chromium.launch(
-                headless=True,
+                headless=headless,
                 args=["--disable-blink-features=AutomationControlled"]
             )
             
@@ -193,11 +193,15 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
         # Smart title extraction utilizing the new inner_title_selector
         if inner_title_selector:
             title_element = job.select_one(inner_title_selector)
-            title = title_element.get_text(strip=True) if title_element else job.get_text(strip=True)
+            title = title_element.get_text(strip=True) if title_element else ""
         else:
-            # Fallback to standard extraction
             title_element = job.find(class_='il-title') or job.find('h3') or job.find('h2')
-            title = title_element.get_text(strip=True) if title_element else job.get_text(strip=True)
+            title = title_element.get_text(strip=True) if title_element else ""
+
+        # Generic guard: If the title is empty or matches known generic UI buttons, ignore this element
+        ignore_titles = ["browse positions", "apply now", "learn more", "view job", "apply"]
+        if not title or title.lower() in ignore_titles:
+            continue
         
         # Clean up prefixes if they exist
         if title.startswith("Learn more about "):

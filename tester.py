@@ -19,7 +19,7 @@ from scrapers import default_scraper
 class MaxJobsReached(Exception):
     pass
 
-def run_tester(companies_to_test, use_keywords=True):
+def run_tester(companies_to_test, use_keywords=True, headless=True):
     """
     A local tester that iterates over a list of companies, bypasses MongoDB and Telegram,
     and stops processing a company once 2 valid jobs are found.
@@ -42,6 +42,7 @@ def run_tester(companies_to_test, use_keywords=True):
         print(f"\n{Colors.CYAN}{'='*50}")
         print(f"Starting TEST for: {company}")
         print(f"Keywords filtering: {'ENABLED' if use_keywords else 'DISABLED'}")
+        print(f"Showing in browser: {'DISABLED' if headless else 'ENABLED'}")
         print(f"{'='*50}{Colors.RESET}")
 
         collected_jobs = []
@@ -80,7 +81,8 @@ def run_tester(companies_to_test, use_keywords=True):
                 popup_selector=target.get("popup_selector"),
                 inner_title_selector=target.get("inner_title_selector"),
                 wait_until_mode=target.get("wait_until", "domcontentloaded"),
-                db_collection=None 
+                db_collection=None,
+                headless=headless
             )
         except MaxJobsReached:
             print(f"{Colors.YELLOW}Reached the limit of 2 jobs for {company}. Stopping HTML parser.{Colors.RESET}")
@@ -96,10 +98,12 @@ def run_tester(companies_to_test, use_keywords=True):
 if __name__ == "__main__":
     # List of companies you want to test right now
     COMPANIES_TO_TEST = [
-        "Siemens"
+        "Lenovo"
     ]
     
     # Enable keyword filtering? (True / False)
     USE_KEYWORDS = False
+
+    HEADLESS_MODE = True  # Set to False if you want to see the browser in action
     
-    run_tester(COMPANIES_TO_TEST, USE_KEYWORDS)
+    run_tester(COMPANIES_TO_TEST, USE_KEYWORDS, HEADLESS_MODE)
