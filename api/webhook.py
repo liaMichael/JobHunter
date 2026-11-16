@@ -57,48 +57,54 @@ def webhook():
             word = text.split("/add_type ", 1)[1].strip()
             job_types.add(word)
             save_preferences(job_types, field_keywords)
-            reply_text = f"✅ התווסף סוג משרה: <b>{word}</b>"
+            reply_text = f"✅ סוג משרה <b>'{word}'</b> התווסף בהצלחה."
             
         elif text_lower.startswith("/remove_type "):
             word = text.split("/remove_type ", 1)[1].strip()
             if word in job_types:
                 job_types.remove(word)
                 save_preferences(job_types, field_keywords)
-                reply_text = f"🗑 הוסר סוג משרה: <b>{word}</b>"
+                reply_text = f"🗑️ סוג משרה <b>'{word}'</b> הוסר."
             else:
-                reply_text = f"⚠️ סוג משרה '{word}' לא נמצא ברשימה."
+                reply_text = f"⚠️ סוג משרה <b>'{word}'</b> לא קיים ברשימה."
                 
         elif text_lower.startswith("/add_field "):
             word = text.split("/add_field ", 1)[1].strip()
             field_keywords.add(word)
             save_preferences(job_types, field_keywords)
-            reply_text = f"✅ התווסף תחום טכני: <b>{word}</b>"
+            reply_text = f"✅ התחום הטכני <b>'{word}'</b> התווסף בהצלחה."
             
         elif text_lower.startswith("/remove_field "):
             word = text.split("/remove_field ", 1)[1].strip()
             if word in field_keywords:
                 field_keywords.remove(word)
                 save_preferences(job_types, field_keywords)
-                reply_text = f"🗑 הוסר תחום טכני: <b>{word}</b>"
+                reply_text = f"🗑️ התחום הטכני <b>'{word}'</b> הוסר."
             else:
-                reply_text = f"⚠️ תחום טכני '{word}' לא נמצא ברשימה."
+                reply_text = f"⚠️ התחום הטכני <b>'{word}'</b> לא קיים ברשימה."
                 
         elif text_lower == "/status":
+            types_str = ", ".join(job_types) if job_types else "אין כרגע"
+            fields_str = ", ".join(field_keywords) if field_keywords else "אין כרגע"
             reply_text = (
-                f"📊 <b>סטטוס סינון משרות (MongoDB):</b>\n\n"
-                f"<b>סוגי משרה:</b>\n{', '.join(job_types)}\n\n"
-                f"<b>תחומים טכניים:</b>\n{', '.join(field_keywords)}"
+                f"📊 <b>סטטוס סינון משרות:</b>\n\n"
+                f"🎯 <b>סוגי משרה:</b> {types_str}\n"
+                f"💻 <b>תחומים טכניים:</b> {fields_str}"
             )
 
         elif text_lower == "/help":
+            types_str = ", ".join(job_types) if job_types else "אין כרגע"
+            fields_str = ", ".join(field_keywords) if field_keywords else "אין כרגע"
             reply_text = (
-                f"🤖 <b>פקודות זמינות לניהול JobHunter:</b>\n\n"
-                f"• /status - הצגת רשימת מילות המפתח וסוגי המשרות הפעילים\n"
-                f"• /add_type [מילה] - הוספת סוג משרה חדש (למשל: /add_type intern)\n"
-                f"• /remove_type [מילה] - הסרת סוג משרה\n"
-                f"• /add_field [מילה] - הוספת מילת מפתח טכנית (למשל: /add_field c++)\n"
-                f"• /remove_field [מילה] - הסרת מילת מפתח טכנית\n"
-                f"• /help - הצגת תפריט זה"
+                "🤖 <b>מדריך לבוט JobHunter:</b>\n\n"
+                "➕ <code>/add_type [word]</code> - הוספת סוג משרה\n"
+                "➖ <code>/remove_type [word]</code> - הסרת סוג משרה\n"
+                "➕ <code>/add_field [word]</code> - הוספת תחום טכני\n"
+                "➖ <code>/remove_field [word]</code> - הסרת תחום טכני\n"
+                "📊 <code>/status</code> - הצגת הסטטוס המלא\n"
+                "ℹ️ <code>/help</code> - הצגת תפריט זה\n\n"
+                f"🎯 <b>סוגי משרה פעילים:</b> {types_str}\n"
+                f"💻 <b>תחומים טכניים פעילים:</b> {fields_str}"
             )
         
         # Send reply back to Telegram
