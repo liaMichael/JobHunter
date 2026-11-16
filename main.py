@@ -5,7 +5,6 @@ import concurrent.futures
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from scrapers.default_scraper import scrape_company_jobs
-from notifiers.telegram_api import process_telegram_commands
 
 # Ensure the project root is in the path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -49,9 +48,6 @@ def main():
         db = client["jobhunter_db"]
         seen_jobs_collection = db["seen_jobs"]
         print("Successfully connected to MongoDB.")
-
-        print("Checking for pending Telegram commands...")
-        process_telegram_commands(db)
 
         # Retrieve keywords directly from MongoDB instead of a local file
         prefs_collection = db["preferences"]
