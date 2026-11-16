@@ -100,7 +100,12 @@ def run_tester(companies_to_test, use_filtering=True, headless=True, job_types=N
 if __name__ == "__main__":
     # List of companies you want to test right now
     COMPANIES_TO_TEST = [
-        "Marvell Technology"
+        "IAI",
+        "Siemens",
+        "Check Point",
+        "Lenovo",
+        "Thales",
+        "MalamTeam"
     ]
     
     # Test filters directly in the tester
@@ -108,7 +113,7 @@ if __name__ == "__main__":
     TEST_FIELD_KEYWORDS = ["software", "developer", "backend", "python", "c", "java"]
     
     # Enable keyword filtering? (True / False)
-    USE_FILTERING = True
+    USE_FILTERING = False
 
     HEADLESS_MODE = True  # Set to False if you want to see the browser in action
     
