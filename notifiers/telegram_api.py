@@ -133,6 +133,18 @@ def process_telegram_commands(db):
             status_msg += f"<b>תחומים טכניים:</b>\n{', '.join(field_keywords)}"
             send_simple_message(status_msg)
 
+        elif text == "/help":
+            help_msg = (
+                f"🤖 <b>פקודות זמינות לניהול JobHunter:</b>\n\n"
+                f"• /status - הצגת רשימת מילות המפתח וסוגי המשרות הפעילים\n"
+                f"• /add_type [מילה] - הוספת סוג משרה חדש (למשל: /add_type intern)\n"
+                f"• /remove_type [מילה] - הסרת סוג משרה\n"
+                f"• /add_field [מילה] - הוספת מילת מפתח טכנית (למשל: /add_field c++)\n"
+                f"• /remove_field [מילה] - הסרת מילת מפתח טכנית\n"
+                f"• /help - הצגת רשימת הפקודות הזמינות"
+            )
+            send_simple_message(help_msg)
+
     # Save modifications back to MongoDB
     if changes_made:
         prefs_col.update_one(
