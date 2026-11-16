@@ -19,7 +19,7 @@ from scrapers import default_scraper
 class MaxJobsReached(Exception):
     pass
 
-def run_tester(companies_to_test, use_keywords=True, headless=True):
+def run_tester(companies_to_test, use_filtering=True, headless=True, job_types=None, field_keywords=None):
     """
     A local tester that iterates over a list of companies, bypasses MongoDB and Telegram,
     and stops processing a company once 2 valid jobs are found.
@@ -41,7 +41,7 @@ def run_tester(companies_to_test, use_keywords=True, headless=True):
 
         print(f"\n{Colors.CYAN}{'='*50}")
         print(f"Starting TEST for: {company}")
-        print(f"Keywords filtering: {'ENABLED' if use_keywords else 'DISABLED'}")
+        print(f"Smart Filtering: {'ENABLED' if use_filtering else 'DISABLED'}")
         print(f"Showing in browser: {'DISABLED' if headless else 'ENABLED'}")
         print(f"{'='*50}{Colors.RESET}")
 
@@ -64,8 +64,9 @@ def run_tester(companies_to_test, use_keywords=True, headless=True):
         original_send_job_alert = default_scraper.send_job_alert
         default_scraper.send_job_alert = mock_send_job_alert
 
-        # Determine if keywords should be passed to the scraper based on tester configuration
-        keywords_to_use = target.get("keywords") if use_keywords else None
+        # Assign filters if enabled
+        j_types = job_types if use_filtering else None
+        f_keywords = field_keywords if use_filtering else None
 
         try:
             # Execute the scraper. 
@@ -77,7 +78,8 @@ def run_tester(companies_to_test, use_keywords=True, headless=True):
                 job_container_class=target["job_container_class"],
                 job_link_prefix=target.get("job_link_prefix", ""),
                 link_contains=target.get("link_contains", ""),
-                keywords=keywords_to_use,
+                job_types=j_types,             # Pass the new type list
+                field_keywords=f_keywords,     # Pass the new field list
                 popup_selector=target.get("popup_selector"),
                 inner_title_selector=target.get("inner_title_selector"),
                 wait_until_mode=target.get("wait_until", "domcontentloaded"),
@@ -101,9 +103,13 @@ if __name__ == "__main__":
         "Marvell Technology"
     ]
     
+    # Test filters directly in the tester
+    TEST_JOB_TYPES = ["student", "intern", "סטודנט"]
+    TEST_FIELD_KEYWORDS = ["software", "developer", "backend", "python", "c", "java"]
+    
     # Enable keyword filtering? (True / False)
-    USE_KEYWORDS = False
+    USE_FILTERING = True
 
     HEADLESS_MODE = True  # Set to False if you want to see the browser in action
     
-    run_tester(COMPANIES_TO_TEST, USE_KEYWORDS, HEADLESS_MODE)
+    run_tester(COMPANIES_TO_TEST, USE_FILTERING, HEADLESS_MODE, TEST_JOB_TYPES, TEST_FIELD_KEYWORDS)

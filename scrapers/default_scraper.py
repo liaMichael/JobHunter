@@ -9,7 +9,7 @@ import hashlib
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from notifiers.telegram_api import send_job_alert
 
-def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", keywords=None, popup_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None, headless=True):
+def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", job_types=None, field_keywords=None, popup_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None, headless=True):
     """
     Scrapes a company's career page using Playwright to handle dynamic JavaScript loading.
     """
@@ -42,7 +42,7 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                 try:
                     page.wait_for_selector(popup_selector, timeout=5000)
                     page.click(popup_selector)
-                    page.wait_for_timeout(2000) # Wait for the popup to close and jobs to load
+                    page.wait_for_timeout(2000)
                 except Exception:
                     pass # Popup didn't appear, move on smoothly
 
@@ -84,8 +84,6 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                                 
                     except Exception as e:
                         print(f"Note: Filter step failed ({step.get('description', '')}): {e}")
-            else:
-                pass
             
             # Convert class name to a valid CSS selector and escape Tailwind colons (e.g., hover:text-blue -> hover\:text-blue)
             css_selector = "." + ".".join(job_container_class.split()).replace(":", r"\:")
@@ -212,11 +210,39 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
         if not title:
             continue
 
-        # Filter by Telegram keywords (if keywords exist)
-        if keywords:
-            title_lower = title.lower()
-            if not any(word.lower() in title_lower for word in keywords):
-                continue
+        title_lower = title.lower()
+
+        # --- SMART FILTERING LOGIC ---
+        
+        # Condition 1: Check job type using smart regex (if provided)
+        has_job_type = False
+        if job_types:
+            for kw in job_types:
+                kw_escaped = re.escape(kw.lower())
+                # Prevent English words from starting mid-word, ignore Hebrew prefixes
+                # Optional spaces/dashes/slashes followed by valid plural/female suffixes
+                # Negative lookahead blocks trailing letters (e.g. "internal")
+                pattern = r'(?<![a-z])' + kw_escaped + r'(?:[\s/-]*(?:s|ship|ships|ים|ות|ית))?(?![a-zא-ת])'
+                
+                if re.search(pattern, title_lower):
+                    has_job_type = True
+                    break
+        else:
+            has_job_type = True # Pass if list is empty
+
+        # Condition 2: Check field keywords using simple substring matching (if provided)
+        has_field = False
+        if field_keywords:
+            if any(kw.lower() in title_lower for kw in field_keywords):
+                has_field = True
+        else:
+            has_field = True # Pass if list is empty
+
+        # Skip the job if it doesn't meet BOTH conditions
+        if not (has_job_type and has_field):
+            continue
+        
+        # --- END SMART FILTERING ---
 
         # Extract full card text to check for location validity (fixing Eightfold global spill)
         card_full_text = job.get_text()
