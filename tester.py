@@ -98,7 +98,7 @@ def run_tester(companies_to_test, use_keywords=True, headless=True):
 if __name__ == "__main__":
     # List of companies you want to test right now
     COMPANIES_TO_TEST = [
-        "Lenovo"
+        "Marvell Technology"
     ]
     
     # Enable keyword filtering? (True / False)

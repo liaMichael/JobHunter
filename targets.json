@@ -105,9 +105,11 @@
     },
     {
         "company_name": "Marvell Technology",
-        "jobs_url": "https://marvell.wd1.myworkdayjobs.com/MarvellCareers",
-        "job_container_class": "css-19uc56f",
+        "jobs_url": "https://marvell.wd1.myworkdayjobs.com/MarvellCareers?Country=084562884af243748dad7c84c304d89a",
+        "job_container_class": "css-1q2dra3",
         "job_link_prefix": "https://marvell.wd1.myworkdayjobs.com",
+        "link_contains": "/job/",
+        "inner_title_selector": "a[data-automation-id='jobTitle']",
         "wait_until": "domcontentloaded"
     },
     {

@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 import sys
 import re
+import hashlib
 
 # Add the parent directory to the system path to allow importing from 'notifiers'
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -242,7 +243,8 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
             full_link = jobs_url
 
         # Create a unique identifier to prevent duplicate alerts
-        job_id = f"{company_name}_{title}"
+        job_id_string = f"{company_name}_{title}_{full_link}"
+        job_id = hashlib.md5(job_id_string.encode()).hexdigest()
         
         # DEDUPLICATION FIX: Skip if already processed in this exact run
         if job_id in seen_in_run:

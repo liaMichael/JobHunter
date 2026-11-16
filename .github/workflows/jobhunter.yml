@@ -2,7 +2,7 @@ name: JobHunter Scraper
 
 on:
   schedule:
-    - cron: '0 */3 * * *' # Runs every 3 hours
+    - cron: '17 */3 * * *'   # Runs every 3 hours
   workflow_dispatch: # Allows you to run a manual test via the GitHub interface
 
 jobs:
