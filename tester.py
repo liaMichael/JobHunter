@@ -85,7 +85,8 @@ def run_tester(companies_to_test, num_jobs=2, use_filtering=True, headless=True,
                 pagination_selector=target.get("pagination_selector"),
                 wait_until_mode=target.get("wait_until", "domcontentloaded"),
                 db_collection=None,
-                headless=headless
+                headless=headless,
+                filter_clicks=target.get("filter_clicks")
             )
         except MaxJobsReached:
             print(f"{Colors.YELLOW}Reached the limit of {num_jobs} jobs for {company}. Stopping HTML parser.{Colors.RESET}")
@@ -101,10 +102,10 @@ def run_tester(companies_to_test, num_jobs=2, use_filtering=True, headless=True,
 if __name__ == "__main__":
     # List of companies you want to test right now
     COMPANIES_TO_TEST = [
-        "JFrog"
+        "Millennium Campus"
     ]
 
-    num_jobs_to_capture = 11 # Number of jobs to capture before stopping the test
+    num_jobs_to_capture = 12 # Number of jobs to capture before stopping the test
     
     # Test filters directly in the tester
     TEST_JOB_TYPES = ["student", "intern", "סטודנט"]
@@ -113,6 +114,6 @@ if __name__ == "__main__":
     # Enable keyword filtering? (True / False)
     USE_FILTERING = False
 
-    HEADLESS_MODE = False  # Set to False if you want to see the browser in action
+    HEADLESS_MODE = True  # Set to False if you want to see the browser in action
     
     run_tester(COMPANIES_TO_TEST, num_jobs=num_jobs_to_capture, use_filtering=USE_FILTERING, headless=HEADLESS_MODE, job_types=TEST_JOB_TYPES, field_keywords=TEST_FIELD_KEYWORDS)

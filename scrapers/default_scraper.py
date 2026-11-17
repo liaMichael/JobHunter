@@ -59,8 +59,8 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                 except Exception:
                     pass # Popup didn't appear, move on smoothly
 
-            # Generic Redirect Fix: If the site redirected us away from the target URL, navigate back
-            if page.url != jobs_url:
+            # Generic Redirect: If the site redirected us away from the target URL, navigate back
+            if not page.url.startswith(jobs_url):
                 page.goto(jobs_url, wait_until=wait_until_mode, timeout=60000)
                 page.wait_for_timeout(3000)
             
@@ -71,17 +71,21 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                         action = step.get("action")
                         selector = step.get("selector")
                         text = step.get("text")
+                        description = step.get("description", selector)
+
+                        if text:
+                            btn = page.locator(selector, has_text=text).first
+                        else:
+                            btn = page.locator(selector).first
                         
                         if action == "click":
                             # Standard click with text matching
-                            btn = page.locator(selector, has_text=text).first
                             btn.wait_for(state="visible", timeout=10000)
                             btn.click()
                             page.wait_for_timeout(1500)
                             
                         elif action == "js_click":
                             # JS click for elements hidden under animations/dropdowns
-                            btn = page.locator(selector, has_text=text).first
                             btn.wait_for(state="attached", timeout=5000)
                             page.evaluate("(element) => element.click()", btn.element_handle())
                             page.wait_for_timeout(2000)
@@ -97,7 +101,7 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                                 
                     except Exception as e:
                         print(f"Note: Filter step failed ({step.get('description', '')}): {e}")
-            
+
             # Convert class name to a valid CSS selector and escape Tailwind colons (e.g., hover:text-blue -> hover\:text-blue)
             css_selector = "." + ".".join(job_container_class.split()).replace(":", r"\:")
             
@@ -106,11 +110,14 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                 page.wait_for_selector(css_selector, timeout=20000)
                 
                 # Pagination Loop: Click 'Next' and accumulate HTML from all pages
-                for page_num in range(1, 30): # Safety limit to prevent infinite loops
+                for page_num in range(1, 50): # Safety limit to prevent infinite loops
                     page.wait_for_timeout(4000) # Give React time to render the jobs
                     
                     # Accumulate this page's HTML to our mega-document
-                    html_content += page.content()
+                    visible_job_locators = page.locator(css_selector).all()
+                    for loc in visible_job_locators:
+                        if loc.is_visible():
+                            html_content += loc.evaluate("element => element.outerHTML")
                     
                     # Use custom pagination selector from JSON if provided, otherwise fallback to generic defaults
                     if pagination_selector:
@@ -139,10 +146,13 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                         
             except Exception:
                 # Fallback: If wait_for_selector timed out, check if the elements are actually present in the DOM anyway
-                fallback_html = page.content()
-                if css_selector.replace("\\", "") in fallback_html:
-                    # Elements exist! Just grab the content silently without printing a scary red timeout error
-                    html_content += fallback_html
+                fallback_locators = page.locator(css_selector).all()
+                for loc in fallback_locators:
+                    try:
+                        if loc.is_visible():
+                            html_content += loc.evaluate("element => element.outerHTML")
+                    except Exception:
+                        pass
                 else:
                     # Truly failed to find anything
                     print(f"\033[91mTimeout waiting for job elements for {company_name}.\033[0m")
@@ -262,16 +272,23 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
             has_field = True # Pass if list is empty
 
         # Skip the job if it doesn't meet BOTH conditions
-        if not (has_job_type and has_field):
-            continue
+        if job_types and field_keywords:
+            if not (has_job_type and has_field):
+                continue
+        elif job_types and not field_keywords:
+            if not has_job_type:
+                continue
+        elif field_keywords and not job_types:
+            if not has_field:
+                continue
         
         # --- END SMART FILTERING ---
 
         # Extract full card text to check for location validity (fixing Eightfold global spill)
         card_full_text = job.get_text()
-        
+
         # If the company is Millennium, strictly require Israel or Tel Aviv in the card text
-        if company_name == "Millennium":
+        if company_name in ["Millennium", "Millennium Campus"]:
             if not any(loc in card_full_text for loc in ["Israel"]):
                 continue
 
@@ -317,7 +334,7 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                 })
             new_jobs_found = True
         
-    if new_jobs_found:
+    if new_jobs_found and db_collection:
         print(f"Finished scrape for {company_name}: New jobs were added to the database.")
     else:
         print(f"Finished scrape for {company_name}: No new jobs found.")

@@ -6,27 +6,30 @@
         "inner_title_selector": "h3",
         "job_link_prefix": "https://www.google.com/about/careers/applications/",
         "link_contains": "jobs/results/",
-        "pagination_selector": "a[aria-label='Go to next page']",
         "wait_until": "networkidle"
     },
     {
         "company_name": "Amazon",
         "jobs_url": "https://amazon.jobs/content/en/locations/israel/tel-aviv",
-        "job_container_class": "header-module_desktop__Dnj66 header-module_title__9-W3R",
-        "job_link_prefix": "https://amazon.jobs/en",
-        "link_contains": "/jobs/"
+        "job_container_class": "job-card-module_root__QYXVA",
+        "job_link_prefix": "https://amazon.jobs",
+        "link_contains": "/jobs/",
+        "inner_title_selector": "a.header-module_title__9-W3R",
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "Amazon Annapurna Labs",
         "jobs_url": "https://amazon.jobs/content/en/teams/annapurna-labs?country%5B%5D=IL#search",
-        "job_container_class": "header-module_title__9-W3R",
+        "job_container_class": "job-card-module_root__QYXVA",
         "job_link_prefix": "https://amazon.jobs/en",
-        "link_contains": "/jobs/"
+        "link_contains": "/jobs/",
+        "inner_title_selector": "a.header-module_title__9-W3R",
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "Intel",
         "jobs_url": "https://intel.wd1.myworkdayjobs.com/External?locations=1e4a4eb3adf101ad7f35e278bf812cd1&locations=1e4a4eb3adf101aaeda8a474bf818ecd&locations=1e4a4eb3adf101f41cd29774bf8184cd&locations=1e4a4eb3adf1013563ba9174bf817fcd&locations=6dc05d901d65100158f5ba48aafb0000&locations=1e4a4eb3adf101cb242c9e74bf8189cd",
-        "job_container_class": "css-19uc56f",
+        "job_container_class": "css-1q2dra3",
         "job_link_prefix": "https://intel.wd1.myworkdayjobs.com",
         "link_contains": "/job/"
     },
@@ -59,9 +62,11 @@
     {
         "company_name": "Apple",
         "jobs_url": "https://jobs.apple.com/en-il/search?location=israel-ISR",
-        "job_container_class": "link-inline t-intro word-wrap-break-word more",
+        "job_container_class": "rc-accordion-item",
         "job_link_prefix": "https://jobs.apple.com",
-        "link_contains": "/details/"
+        "link_contains": "/details/",
+        "inner_title_selector": "h3 a",
+        "wait_until": "domcontentloaded"
     },
     {
         "company_name": "IAI",
@@ -73,10 +78,11 @@
     {
         "company_name": "Elbit Systems",
         "jobs_url": "https://elbitsystemscareer.com/jobs/",
-        "job_container_class": "css-8g9nvw",
+        "job_container_class": "MuiCard-root",
+        "job_link_prefix": "https://elbitsystemscareer.com",
+        "link_contains": "/job/",
         "inner_title_selector": "h3",
-        "job_link_prefix": "https://elbitsystemscareer.com/job",
-        "link_contains": "jid=",
+        "pagination_selector": "button:has-text('תוצאות חיפוש נוספות')",
         "wait_until": "domcontentloaded"
     },
     {
@@ -123,12 +129,25 @@
         "wait_until": "domcontentloaded"
     },
     {
-        "company_name": "Millennium",
-        "jobs_url": "https://campusjobs.mlp.com/careers?domain=mlp.com",
+        "company_name": "Millennium Campus",
+        "jobs_url": "https://campusjobs.mlp.com/careers/*/tel_aviv_israel?domain=mlp.com",
         "job_container_class": "position-card",
-        "inner_title_selector": ".position-title",
         "job_link_prefix": "https://campusjobs.mlp.com/careers/job",
-        "link_contains": "",
+        "link_contains": "tel_aviv",
+        "inner_title_selector": ".position-title",
+        "popup_selector": "button.close-modal-button",
+        "pagination_selector": "button.show-more-positions",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Millennium",
+        "jobs_url": "https://career.mlp.com/careers/*/tel_aviv_israel?domain=mlp.com",
+        "job_container_class": "position-card",
+        "job_link_prefix": "https://career.mlp.com/careers/job",
+        "link_contains": "tel_aviv",
+        "inner_title_selector": ".position-title",
+        "popup_selector": "button.close-modal-button",
+        "pagination_selector": "button.show-more-positions",
         "wait_until": "domcontentloaded"
     },
     {
