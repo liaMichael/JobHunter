@@ -6,6 +6,7 @@
         "inner_title_selector": "h3",
         "job_link_prefix": "https://www.google.com/about/careers/applications/",
         "link_contains": "jobs/results/",
+        "pagination_selector": "a[aria-label='Go to next page']",
         "wait_until": "networkidle"
     },
     {
@@ -378,5 +379,51 @@
         "link_contains": "/careers/",
         "inner_title_selector": ".position-name",
         "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "PayPal",
+        "jobs_url": "https://paypal.wd1.myworkdayjobs.com/jobs?locations=bcdc9518960a01e6bcbbc1aa2d243c99",
+        "job_container_class": "css-1q2dra3",
+        "job_link_prefix": "https://paypal.wd1.myworkdayjobs.com",
+        "link_contains": "/job/",
+        "inner_title_selector": "a[data-automation-id='jobTitle']",
+        "wait_until": "networkidle"
+    },
+    {
+        "company_name": "Deloitte",
+        "jobs_url": "https://careers.deloitte.co.il/search-positions/?keywords=&interest=0&job_area=0&location=0",
+        "job_container_class": "position-row",
+        "job_link_prefix": "",
+        "link_contains": "/position/",
+        "inner_title_selector": ".position-row-title",
+        "pagination_selector": "a.positions-paginate-load-button",
+        "wait_until": "networkidle"
+    },
+    {
+        "company_name": "Matrix",
+        "jobs_url": "https://www.matrix.co.il/jobs/tag/all-jobs/",
+        "job_container_class": "job-item",
+        "job_link_prefix": "",
+        "link_contains": "/jobs/משרה/",
+        "inner_title_selector": "h2.job-title a",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "JFrog",
+        "jobs_url": "https://join.jfrog.com/positions/?gh_office=25868",
+        "job_container_class": "green-job-square",
+        "job_link_prefix": "",
+        "link_contains": "/job/",
+        "inner_title_selector": "h3",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Motorola Solutions",
+        "jobs_url": "https://motorolasolutions.wd5.myworkdayjobs.com/Careers?locationCountry=084562884af243748dad7c84c304d89a",
+        "job_container_class": "css-1q2dra3",
+        "job_link_prefix": "https://motorolasolutions.wd5.myworkdayjobs.com",
+        "link_contains": "/job/",
+        "inner_title_selector": "a[data-automation-id='jobTitle']",
+        "wait_until": "networkidle"
     }
 ]

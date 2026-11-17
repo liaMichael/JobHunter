@@ -9,7 +9,7 @@ import hashlib
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from notifiers.telegram_api import send_job_alert
 
-def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", job_types=None, field_keywords=None, popup_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None, headless=True):
+def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", job_types=None, field_keywords=None, popup_selector=None, pagination_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None, headless=True):
     """
     Scrapes a company's career page using Playwright to handle dynamic JavaScript loading.
     """
@@ -18,8 +18,9 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
     html_content = ""
     try:
         with sync_playwright() as p:
-            # Launch with arguments that hide automation flags from WAFs
+            # Launch with arguments that hide automation flags and use the real Chrome browser
             browser = p.chromium.launch(
+                channel="chrome", 
                 headless=headless,
                 args=["--disable-blink-features=AutomationControlled"]
             )
@@ -30,9 +31,21 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                 viewport={"width": 1920, "height": 1080}
             )
             page = context.new_page()
-            
-            # Inject a script to erase the 'webdriver' fingerprint before Rafael can see it
-            page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+
+            # Inject human-like browser fingerprints to bypass WAFs without external dependencies
+            page.add_init_script("""
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+                window.navigator.chrome = { runtime: {} };
+                Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
+                Object.defineProperty(navigator, 'languages', { get: () => ['he-IL', 'he', 'en-US', 'en'] });
+                
+                const originalQuery = window.navigator.permissions.query;
+                window.navigator.permissions.query = (parameters) => (
+                    parameters.name === 'notifications' ? 
+                        Promise.resolve({ state: Notification.permission }) : 
+                        originalQuery(parameters)
+                );
+            """)
             
             # Uses the dynamic wait mode (networkidle for SPAs, domcontentloaded for the rest)
             page.goto(jobs_url, wait_until=wait_until_mode, timeout=60000)
@@ -99,16 +112,26 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                     # Accumulate this page's HTML to our mega-document
                     html_content += page.content()
                     
-                    # Look for the "Next" button handling English, Hebrew, and standard React pagination classes
-                    next_btn = page.locator('button[aria-label*="Next" i], a[aria-label*="Next" i], button[aria-label*="הבא"], a[aria-label*="הבא"], ul.pagination li:last-child button, ul.pagination li:last-child a').first
+                    # Use custom pagination selector from JSON if provided, otherwise fallback to generic defaults
+                    if pagination_selector:
+                        next_btn = page.locator(pagination_selector).first
+                    else:
+                        next_btn = page.locator('button[aria-label*="Next" i], a[aria-label*="Next" i], button[aria-label*="הבא"], a[aria-label*="הבא"]').first
                     
                     if next_btn.is_visible():
-                        # React sometimes uses 'aria-disabled' instead of the native HTML 'disabled' attribute
+                        # React sometimes uses 'aria-disabled'
                         is_aria_disabled = next_btn.get_attribute("aria-disabled") == "true"
-                        is_native_disabled = next_btn.is_disabled()
                         
+                        # Safely check native disabled state (will fail on <a> tags, so we use try/except)
+                        is_native_disabled = False
+                        try:
+                            is_native_disabled = next_btn.is_disabled()
+                        except Exception:
+                            pass 
+
                         if not is_aria_disabled and not is_native_disabled:
-                            next_btn.click()
+                            # Force the click using JavaScript to bypass loaders and overlays
+                            next_btn.evaluate("node => node.click()")
                         else:
                             break
                     else:

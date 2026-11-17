@@ -19,10 +19,10 @@ from scrapers import default_scraper
 class MaxJobsReached(Exception):
     pass
 
-def run_tester(companies_to_test, use_filtering=True, headless=True, job_types=None, field_keywords=None):
+def run_tester(companies_to_test, num_jobs=2, use_filtering=True, headless=True, job_types=None, field_keywords=None):
     """
     A local tester that iterates over a list of companies, bypasses MongoDB and Telegram,
-    and stops processing a company once 2 valid jobs are found.
+    and stops processing a company once {num_jobs} valid jobs are found.
     """
     # Load the scraper settings from the JSON configuration file
     try:
@@ -51,13 +51,13 @@ def run_tester(companies_to_test, use_filtering=True, headless=True, job_types=N
         # Temporarily replace the real Telegram alert function with a local mock function
         def mock_send_job_alert(title, link, comp):
             collected_jobs.append({"title": title, "link": link})
-            print(f"{Colors.GREEN}[TEST CAPTURE {len(collected_jobs)}/2]")
+            print(f"{Colors.GREEN}[TEST CAPTURE {len(collected_jobs)}/{num_jobs}]")
             print(f"   Title: {title}")
             print(f"   Link:  {link}{Colors.RESET}\n")
             
-            # If we reached the limit of 2 jobs, raise the exception to break out 
+            # If we reached the limit of {num_jobs} jobs, raise the exception to break out 
             # of the BeautifulSoup parsing loop and move on to the next company
-            if len(collected_jobs) >= 2:
+            if len(collected_jobs) >= num_jobs:
                 raise MaxJobsReached()
 
         # Save the original Telegram function reference and override it in memory
@@ -78,16 +78,17 @@ def run_tester(companies_to_test, use_filtering=True, headless=True, job_types=N
                 job_container_class=target["job_container_class"],
                 job_link_prefix=target.get("job_link_prefix", ""),
                 link_contains=target.get("link_contains", ""),
-                job_types=j_types,             # Pass the new type list
-                field_keywords=f_keywords,     # Pass the new field list
+                job_types=j_types,
+                field_keywords=f_keywords,
                 popup_selector=target.get("popup_selector"),
                 inner_title_selector=target.get("inner_title_selector"),
+                pagination_selector=target.get("pagination_selector"),
                 wait_until_mode=target.get("wait_until", "domcontentloaded"),
                 db_collection=None,
                 headless=headless
             )
         except MaxJobsReached:
-            print(f"{Colors.YELLOW}Reached the limit of 2 jobs for {company}. Stopping HTML parser.{Colors.RESET}")
+            print(f"{Colors.YELLOW}Reached the limit of {num_jobs} jobs for {company}. Stopping HTML parser.{Colors.RESET}")
         except Exception as e:
             print(f"{Colors.RED}Error during test for {company}: {e}{Colors.RESET}")
         finally:
@@ -100,13 +101,10 @@ def run_tester(companies_to_test, use_filtering=True, headless=True, job_types=N
 if __name__ == "__main__":
     # List of companies you want to test right now
     COMPANIES_TO_TEST = [
-        "IAI",
-        "Siemens",
-        "Check Point",
-        "Lenovo",
-        "Thales",
-        "MalamTeam"
+        "JFrog"
     ]
+
+    num_jobs_to_capture = 11 # Number of jobs to capture before stopping the test
     
     # Test filters directly in the tester
     TEST_JOB_TYPES = ["student", "intern", "סטודנט"]
@@ -115,6 +113,6 @@ if __name__ == "__main__":
     # Enable keyword filtering? (True / False)
     USE_FILTERING = False
 
-    HEADLESS_MODE = True  # Set to False if you want to see the browser in action
+    HEADLESS_MODE = False  # Set to False if you want to see the browser in action
     
-    run_tester(COMPANIES_TO_TEST, USE_FILTERING, HEADLESS_MODE, TEST_JOB_TYPES, TEST_FIELD_KEYWORDS)
+    run_tester(COMPANIES_TO_TEST, num_jobs=num_jobs_to_capture, use_filtering=USE_FILTERING, headless=HEADLESS_MODE, job_types=TEST_JOB_TYPES, field_keywords=TEST_FIELD_KEYWORDS)

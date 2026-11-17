@@ -22,10 +22,11 @@ def run_scraper_task(target, job_types, field_keywords, db_collection):
             job_container_class=target["job_container_class"],
             job_link_prefix=target.get("job_link_prefix", ""),
             link_contains=target.get("link_contains", ""),
-            job_types=job_types,          # Pass job types regex list
-            field_keywords=field_keywords,# Pass technical fields list
+            job_types=job_types,
+            field_keywords=field_keywords,
             popup_selector=target.get("popup_selector"),
             inner_title_selector=target.get("inner_title_selector"),
+            pagination_selector=target.get("pagination_selector"),
             wait_until_mode=target.get("wait_until", "domcontentloaded"),
             db_collection=db_collection,
             filter_clicks=target.get("filter_clicks")
