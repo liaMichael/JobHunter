@@ -19,7 +19,7 @@ from scrapers import default_scraper
 class MaxJobsReached(Exception):
     pass
 
-def run_tester(companies_to_test, num_jobs=2, use_filtering=True, headless=True, job_types=None, field_keywords=None):
+def run_tester(companies_to_test, num_jobs=2, use_filtering=True, job_types=None, field_keywords=None, debug_ops=None):
     """
     A local tester that iterates over a list of companies, bypasses MongoDB and Telegram,
     and stops processing a company once {num_jobs} valid jobs are found.
@@ -42,7 +42,7 @@ def run_tester(companies_to_test, num_jobs=2, use_filtering=True, headless=True,
         print(f"\n{Colors.CYAN}{'='*50}")
         print(f"Starting TEST for: {company}")
         print(f"Smart Filtering: {'ENABLED' if use_filtering else 'DISABLED'}")
-        print(f"Showing in browser: {'DISABLED' if headless else 'ENABLED'}")
+        print(f"Showing in browser: {'DISABLED' if debug_ops["headless"] else 'ENABLED'}")
         print(f"{'='*50}{Colors.RESET}")
 
         collected_jobs = []
@@ -83,10 +83,11 @@ def run_tester(companies_to_test, num_jobs=2, use_filtering=True, headless=True,
                 popup_selector=target.get("popup_selector"),
                 inner_title_selector=target.get("inner_title_selector"),
                 pagination_selector=target.get("pagination_selector"),
+                required_location=target.get("required_location"),
                 wait_until_mode=target.get("wait_until", "domcontentloaded"),
                 db_collection=None,
-                headless=headless,
-                filter_clicks=target.get("filter_clicks")
+                filter_clicks=target.get("filter_clicks"),
+                debug_mode=debug_ops
             )
         except MaxJobsReached:
             print(f"{Colors.YELLOW}Reached the limit of {num_jobs} jobs for {company}. Stopping HTML parser.{Colors.RESET}")
@@ -102,10 +103,10 @@ def run_tester(companies_to_test, num_jobs=2, use_filtering=True, headless=True,
 if __name__ == "__main__":
     # List of companies you want to test right now
     COMPANIES_TO_TEST = [
-        "Millennium Campus"
+        "Forter"
     ]
 
-    num_jobs_to_capture = 12 # Number of jobs to capture before stopping the test
+    num_jobs_to_capture = 3 # Number of jobs to capture before stopping the test
     
     # Test filters directly in the tester
     TEST_JOB_TYPES = ["student", "intern", "סטודנט"]
@@ -114,6 +115,6 @@ if __name__ == "__main__":
     # Enable keyword filtering? (True / False)
     USE_FILTERING = False
 
-    HEADLESS_MODE = True  # Set to False if you want to see the browser in action
+    DEBUG_OPS = {"headless": True, "clicks": False, "jobs_html": False}
     
-    run_tester(COMPANIES_TO_TEST, num_jobs=num_jobs_to_capture, use_filtering=USE_FILTERING, headless=HEADLESS_MODE, job_types=TEST_JOB_TYPES, field_keywords=TEST_FIELD_KEYWORDS)
+    run_tester(COMPANIES_TO_TEST, num_jobs=num_jobs_to_capture, use_filtering=USE_FILTERING, job_types=TEST_JOB_TYPES, field_keywords=TEST_FIELD_KEYWORDS, debug_ops=DEBUG_OPS)

@@ -137,6 +137,7 @@
         "inner_title_selector": ".position-title",
         "popup_selector": "button.close-modal-button",
         "pagination_selector": "button.show-more-positions",
+        "required_location": "israel",
         "wait_until": "domcontentloaded"
     },
     {
@@ -148,6 +149,7 @@
         "inner_title_selector": ".position-title",
         "popup_selector": "button.close-modal-button",
         "pagination_selector": "button.show-more-positions",
+        "required_location": "israel",
         "wait_until": "domcontentloaded"
     },
     {
@@ -161,10 +163,11 @@
     },
     {
         "company_name": "Forter",
-        "jobs_url": "https://www.forter.com/job-opportunities/?_gl=1*aivvup*_up*MQ..*_ga*MTc4OTM0MTc1LjE3OTQyMTQ1NTI.*_ga_X5FEEHQK5P*czE3OTQyMTQ1NTEkbzEkZzAkdDE3OTQyMTQ1NTEkajYwJGwwJGgw",
-        "job_container_class": "text-sm tracking-widest uppercase font-secondary font-medium text-forter-gray-4 hover:text-forter-blue group",
-        "job_link_prefix": "",
-        "link_contains": ""
+        "jobs_url": "https://www.forter.com/job-opportunities/",
+        "job_container_class": "block w-full",
+        "inner_title_selector": "td",
+        "required_location": "israel",
+        "wait_until": "networkidle"
     },
     {
         "company_name": "MKS",
@@ -431,7 +434,6 @@
         "company_name": "JFrog",
         "jobs_url": "https://join.jfrog.com/positions/?gh_office=25868",
         "job_container_class": "green-job-square",
-        "job_link_prefix": "",
         "link_contains": "/job/",
         "inner_title_selector": "h3",
         "wait_until": "domcontentloaded"
@@ -444,5 +446,21 @@
         "link_contains": "/job/",
         "inner_title_selector": "a[data-automation-id='jobTitle']",
         "wait_until": "networkidle"
+    },
+    {
+        "company_name": "Nestlogic",
+        "jobs_url": "https://nestlogic.com/careers.html",
+        "job_container_class": "role",
+        "inner_title_selector": "h3",
+        "wait_until": "domcontentloaded"
+    },
+    {
+        "company_name": "Wiz",
+        "jobs_url": "https://www.wiz.io/careers?location=Tel+Aviv",
+        "job_container_class": "group relative block",
+        "job_link_prefix": "https://www.wiz.io",
+        "link_contains": "/careers/job/",
+        "inner_title_selector": "p.text-primary-blue",
+        "wait_until": "domcontentloaded"
     }
 ]

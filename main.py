@@ -27,6 +27,7 @@ def run_scraper_task(target, job_types, field_keywords, db_collection):
             popup_selector=target.get("popup_selector"),
             inner_title_selector=target.get("inner_title_selector"),
             pagination_selector=target.get("pagination_selector"),
+            required_location=target.get("required_location"),
             wait_until_mode=target.get("wait_until", "domcontentloaded"),
             db_collection=db_collection,
             filter_clicks=target.get("filter_clicks")

@@ -9,7 +9,7 @@ import hashlib
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from notifiers.telegram_api import send_job_alert
 
-def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", job_types=None, field_keywords=None, popup_selector=None, pagination_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None, headless=True):
+def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", job_types=None, field_keywords=None, popup_selector=None, pagination_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None, required_location=None, debug_mode=None):
     """
     Scrapes a company's career page using Playwright to handle dynamic JavaScript loading.
     """
@@ -21,7 +21,7 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
             # Launch with arguments that hide automation flags and use the real Chrome browser
             browser = p.chromium.launch(
                 channel="chrome", 
-                headless=headless,
+                headless=debug_mode["headless"],
                 args=["--disable-blink-features=AutomationControlled"]
             )
             
@@ -83,12 +83,16 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                             btn.wait_for(state="visible", timeout=10000)
                             btn.click()
                             page.wait_for_timeout(1500)
+                            if debug_mode["clicks"]:
+                                print(f"DEBUG: Clicked filter '{description}.")
                             
                         elif action == "js_click":
                             # JS click for elements hidden under animations/dropdowns
                             btn.wait_for(state="attached", timeout=5000)
                             page.evaluate("(element) => element.click()", btn.element_handle())
                             page.wait_for_timeout(2000)
+                            if debug_mode["clicks"]:
+                                print(f"DEBUG: Clicked filter '{description} with JavaScript.")
                             
                         elif action == "click_all_suboptions":
                             # Click all items in an active sub-menu (like cities)
@@ -96,6 +100,8 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                             if city_buttons:
                                 for city_btn in city_buttons:
                                     page.evaluate("(element) => element.click()", city_btn.element_handle())
+                                    if debug_mode["clicks"]:
+                                        print(f"DEBUG: Clicked suboption for filter '{description}.")
                                     page.wait_for_timeout(500)
                                 page.wait_for_timeout(3000) # Wait for React/Vue to render
                                 
@@ -175,6 +181,11 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
     
     # Find standard links, nested links, or container div itself
     job_elements = soup.select(f"a{css_selector}, {css_selector} a, {css_selector}")
+
+    if debug_mode["jobs_html"]:
+        print(f"DEBUG: selector={css_selector}, html_len={len(html_content)}, job_elements={len(job_elements)}")
+        if job_elements:
+            print("DEBUG: First element:", job_elements[0])
     
     new_jobs_found = False
     seen_in_run = set()  # Prevent duplicate processing in a single run
@@ -284,12 +295,12 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
         
         # --- END SMART FILTERING ---
 
-        # Extract full card text to check for location validity (fixing Eightfold global spill)
-        card_full_text = job.get_text()
-
-        # If the company is Millennium, strictly require Israel or Tel Aviv in the card text
-        if company_name in ["Millennium", "Millennium Campus"]:
-            if not any(loc in card_full_text for loc in ["Israel"]):
+        # Extract full card text to check for location validity
+        card_full_text = job.get_text().lower()
+        
+        # Generic check driven by targets.json (no hardcoded company names)
+        if required_location:
+            if not any(loc in card_full_text for loc in [required_location]):
                 continue
 
         # Process the final link based on whether href was found or missing
