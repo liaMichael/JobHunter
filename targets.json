@@ -137,7 +137,7 @@
         "inner_title_selector": ".position-title",
         "popup_selector": "button.close-modal-button",
         "pagination_selector": "button.show-more-positions",
-        "required_location": "israel",
+        "required_locations": ["israel"],
         "wait_until": "domcontentloaded"
     },
     {
@@ -149,7 +149,7 @@
         "inner_title_selector": ".position-title",
         "popup_selector": "button.close-modal-button",
         "pagination_selector": "button.show-more-positions",
-        "required_location": "israel",
+        "required_locations": ["israel"],
         "wait_until": "domcontentloaded"
     },
     {
@@ -166,7 +166,7 @@
         "jobs_url": "https://www.forter.com/job-opportunities/",
         "job_container_class": "block w-full",
         "inner_title_selector": "td",
-        "required_location": "israel",
+        "required_locations": ["israel"],
         "wait_until": "networkidle"
     },
     {
@@ -336,8 +336,7 @@
         "job_container_class": "article__header__text__title",
         "job_link_prefix": "",
         "link_contains": "/JobDetail/",
-        "inner_title_selector": "a",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": "a"
     },
     {
         "company_name": "Samsung",
@@ -354,8 +353,7 @@
         "job_container_class": "jobs-list-item",
         "job_link_prefix": "",
         "link_contains": "/job/",
-        "inner_title_selector": ".job-title",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": ".job-title"
     },
     {
         "company_name": "Stratasys",
@@ -363,8 +361,7 @@
         "job_container_class": "data-row",
         "job_link_prefix": "https://careers.stratasys.com",
         "link_contains": "/job/",
-        "inner_title_selector": ".jobTitle-link",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": ".jobTitle-link"
     },
     {
         "company_name": "Wix",
@@ -372,8 +369,7 @@
         "job_container_class": "comp-mopq6bcy8",
         "job_link_prefix": "",
         "link_contains": "/position/oracle-",
-        "inner_title_selector": ".font_3",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": ".font_3"
     },
     {
         "company_name": "Meta",
@@ -381,8 +377,7 @@
         "job_container_class": "x1i10hfl",
         "job_link_prefix": "https://www.metacareers.com",
         "link_contains": "/profile/job_details/",
-        "inner_title_selector": "h3",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": "h3"
     },
     {
         "company_name": "MalamTeam",
@@ -390,8 +385,7 @@
         "job_container_class": "job-item-container",
         "job_link_prefix": "https://career.malamteam.com",
         "link_contains": "/%d7%a2%d7%9e%d7%95%d7%93-%d7%9e%d7%a9%d7%a8%d7%94/?jid=",
-        "inner_title_selector": "h2.job-name",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": "h2.job-name"
     },
     {
         "company_name": "monday.com",
@@ -399,8 +393,7 @@
         "job_container_class": "position-container",
         "job_link_prefix": "https://monday.com",
         "link_contains": "/careers/",
-        "inner_title_selector": ".position-name",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": ".position-name"
     },
     {
         "company_name": "PayPal",
@@ -427,16 +420,14 @@
         "job_container_class": "job-item",
         "job_link_prefix": "",
         "link_contains": "/jobs/משרה/",
-        "inner_title_selector": "h2.job-title a",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": "h2.job-title a"
     },
     {
         "company_name": "JFrog",
         "jobs_url": "https://join.jfrog.com/positions/?gh_office=25868",
         "job_container_class": "green-job-square",
         "link_contains": "/job/",
-        "inner_title_selector": "h3",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": "h3"
     },
     {
         "company_name": "Motorola Solutions",
@@ -451,8 +442,7 @@
         "company_name": "Nestlogic",
         "jobs_url": "https://nestlogic.com/careers.html",
         "job_container_class": "role",
-        "inner_title_selector": "h3",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": "h3"
     },
     {
         "company_name": "Wiz",
@@ -460,7 +450,38 @@
         "job_container_class": "group relative block",
         "job_link_prefix": "https://www.wiz.io",
         "link_contains": "/careers/job/",
-        "inner_title_selector": "p.text-primary-blue",
-        "wait_until": "domcontentloaded"
+        "inner_title_selector": "p.text-primary-blue"
+    },
+    {
+        "company_name": "Medtronic",
+        "jobs_url": "https://medtronic.wd1.myworkdayjobs.com/he-IL/medtroniccareers?locationCountry=084562884af243748dad7c84c304d89a",
+        "job_container_class": "css-1q2dra3",
+        "job_link_prefix": "https://medtronic.wd1.myworkdayjobs.com",
+        "link_contains": "/job/",
+        "inner_title_selector": "a[data-automation-id='jobTitle']"
+    },
+    {
+        "company_name": "Connecteam",
+        "jobs_url": "https://connecteam.com/careers/",
+        "link_contains": "/careers/",
+        "inner_title_selector": "td.title",
+        "required_locations": ["israel"]
+    },
+    {
+        "company_name": "Radware",
+        "jobs_url": "https://radware.taleo.net/careersection/ex/jobsearch.ftl?lang=en",
+        "job_container_class": "ftlcopy ftlrow",
+        "inner_title_selector": "span.titlelink a",
+        "pagination_selector": "a[title='Go to the next page']",
+        "required_locations": ["israel", "il-"],
+        "wait_until": "networkidle"
+    },
+    {
+        "company_name": "RedHat",
+        "jobs_url": "https://redhat.wd5.myworkdayjobs.com/jobs/?a=084562884af243748dad7c84c304d89a",
+        "job_container_class": "css-1q2dra3",
+        "job_link_prefix": "https://redhat.wd5.myworkdayjobs.com",
+        "link_contains": "/job/",
+        "inner_title_selector": "a[data-automation-id='jobTitle']"
     }
 ]

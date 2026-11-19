@@ -83,7 +83,7 @@ def run_tester(companies_to_test, num_jobs=2, use_filtering=True, job_types=None
                 popup_selector=target.get("popup_selector"),
                 inner_title_selector=target.get("inner_title_selector"),
                 pagination_selector=target.get("pagination_selector"),
-                required_location=target.get("required_location"),
+                required_locations=target.get("required_locations"),
                 wait_until_mode=target.get("wait_until", "domcontentloaded"),
                 db_collection=None,
                 filter_clicks=target.get("filter_clicks"),
@@ -103,10 +103,10 @@ def run_tester(companies_to_test, num_jobs=2, use_filtering=True, job_types=None
 if __name__ == "__main__":
     # List of companies you want to test right now
     COMPANIES_TO_TEST = [
-        "Forter"
+        "RedHat"
     ]
 
-    num_jobs_to_capture = 3 # Number of jobs to capture before stopping the test
+    num_jobs_to_capture = 2 # Number of jobs to capture before stopping the test
     
     # Test filters directly in the tester
     TEST_JOB_TYPES = ["student", "intern", "סטודנט"]
@@ -115,6 +115,6 @@ if __name__ == "__main__":
     # Enable keyword filtering? (True / False)
     USE_FILTERING = False
 
-    DEBUG_OPS = {"headless": True, "clicks": False, "jobs_html": False}
+    DEBUG_OPS = {"headless": True, "clicks": False, "jobs_html": False, "pagination": False}
     
     run_tester(COMPANIES_TO_TEST, num_jobs=num_jobs_to_capture, use_filtering=USE_FILTERING, job_types=TEST_JOB_TYPES, field_keywords=TEST_FIELD_KEYWORDS, debug_ops=DEBUG_OPS)

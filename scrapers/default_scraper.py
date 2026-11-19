@@ -9,7 +9,16 @@ import hashlib
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from notifiers.telegram_api import send_job_alert
 
-def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_prefix="", link_contains="", job_types=None, field_keywords=None, popup_selector=None, pagination_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None, required_location=None, debug_mode=None):
+# Terminal color codes for clean, colorized output
+class Colors:
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    CYAN = '\033[96m'
+    MAGENTA = '\033[95m'
+    RESET = '\033[0m'
+
+def scrape_company_jobs(company_name, jobs_url, job_container_class="", job_link_prefix="", link_contains="", job_types=None, field_keywords=None, popup_selector=None, pagination_selector=None, inner_title_selector=None, wait_until_mode="domcontentloaded", db_collection=None, filter_clicks=None, required_locations=None, debug_mode=None):
     """
     Scrapes a company's career page using Playwright to handle dynamic JavaScript loading.
     """
@@ -84,7 +93,7 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                             btn.click()
                             page.wait_for_timeout(1500)
                             if debug_mode["clicks"]:
-                                print(f"DEBUG: Clicked filter '{description}.")
+                                print(f"{Colors.GREEN}DEBUG: Clicked filter '{description}.{Colors.RESET}")
                             
                         elif action == "js_click":
                             # JS click for elements hidden under animations/dropdowns
@@ -92,7 +101,7 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                             page.evaluate("(element) => element.click()", btn.element_handle())
                             page.wait_for_timeout(2000)
                             if debug_mode["clicks"]:
-                                print(f"DEBUG: Clicked filter '{description} with JavaScript.")
+                                print(f"{Colors.GREEN}DEBUG: Clicked filter '{description} with JavaScript.{Colors.RESET}")
                             
                         elif action == "click_all_suboptions":
                             # Click all items in an active sub-menu (like cities)
@@ -101,7 +110,7 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                                 for city_btn in city_buttons:
                                     page.evaluate("(element) => element.click()", city_btn.element_handle())
                                     if debug_mode["clicks"]:
-                                        print(f"DEBUG: Clicked suboption for filter '{description}.")
+                                        print(f"{Colors.GREEN}DEBUG: Clicked suboption for filter '{description}.{Colors.RESET}")
                                     page.wait_for_timeout(500)
                                 page.wait_for_timeout(3000) # Wait for React/Vue to render
                                 
@@ -109,59 +118,65 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
                         print(f"Note: Filter step failed ({step.get('description', '')}): {e}")
 
             # Convert class name to a valid CSS selector and escape Tailwind colons (e.g., hover:text-blue -> hover\:text-blue)
-            css_selector = "." + ".".join(job_container_class.split()).replace(":", r"\:")
+            raw_classes = (job_container_class or "").split()
+            css_selector = ("." + ".".join(raw_classes).replace(":", r"\:")) if raw_classes else ""
             
-            # Wait explicitly for the job elements to render on the screen
-            try:
-                page.wait_for_selector(css_selector, timeout=20000)
-                
-                # Pagination Loop: Click 'Next' and accumulate HTML from all pages
-                for page_num in range(1, 50): # Safety limit to prevent infinite loops
-                    page.wait_for_timeout(4000) # Give React time to render the jobs
+            if css_selector:
+                # Wait explicitly for the job elements to render on the screen
+                try:
+                    page.wait_for_selector(css_selector, timeout=20000)
                     
-                    # Accumulate this page's HTML to our mega-document
-                    visible_job_locators = page.locator(css_selector).all()
-                    for loc in visible_job_locators:
-                        if loc.is_visible():
-                            html_content += loc.evaluate("element => element.outerHTML")
-                    
-                    # Use custom pagination selector from JSON if provided, otherwise fallback to generic defaults
-                    if pagination_selector:
-                        next_btn = page.locator(pagination_selector).first
-                    else:
-                        next_btn = page.locator('button[aria-label*="Next" i], a[aria-label*="Next" i], button[aria-label*="הבא"], a[aria-label*="הבא"]').first
-                    
-                    if next_btn.is_visible():
-                        # React sometimes uses 'aria-disabled'
-                        is_aria_disabled = next_btn.get_attribute("aria-disabled") == "true"
+                    # Pagination Loop: Click 'Next' and accumulate HTML from all pages
+                    for page_num in range(1, 50): # Safety limit to prevent infinite loops
+                        page.wait_for_timeout(4000) # Give React time to render the jobs
                         
-                        # Safely check native disabled state (will fail on <a> tags, so we use try/except)
-                        is_native_disabled = False
-                        try:
-                            is_native_disabled = next_btn.is_disabled()
-                        except Exception:
-                            pass 
+                        # Accumulate this page's HTML to our mega-document
+                        visible_job_locators = page.locator(css_selector).all()
+                        for loc in visible_job_locators:
+                            if loc.is_visible():
+                                html_content += loc.evaluate("element => element.outerHTML")
+                        
+                        # Use custom pagination selector from JSON if provided, otherwise fallback to generic defaults
+                        if pagination_selector:
+                            next_btn = page.locator(pagination_selector).first
+                        else:
+                            next_btn = page.locator('button[aria-label*="Next" i], a[aria-label*="Next" i], button[aria-label*="הבא"], a[aria-label*="הבא"]').first
+                        
+                        if next_btn.is_visible():
+                            # React sometimes uses 'aria-disabled'
+                            is_aria_disabled = next_btn.get_attribute("aria-disabled") == "true"
+                            
+                            # Safely check native disabled state (will fail on <a> tags, so we use try/except)
+                            is_native_disabled = False
+                            try:
+                                is_native_disabled = next_btn.is_disabled()
+                            except Exception:
+                                pass 
 
-                        if not is_aria_disabled and not is_native_disabled:
-                            # Force the click using JavaScript to bypass loaders and overlays
-                            next_btn.evaluate("node => node.click()")
+                            if not is_aria_disabled and not is_native_disabled:
+                                # Force the click using JavaScript to bypass loaders and overlays
+                                next_btn.evaluate("node => node.click()")
+                            else:
+                                break
                         else:
                             break
+                            
+                except Exception:
+                    # Fallback: If wait_for_selector timed out, check if the elements are actually present in the DOM anyway
+                    fallback_locators = page.locator(css_selector).all()
+                    for loc in fallback_locators:
+                        try:
+                            if loc.is_visible():
+                                html_content += loc.evaluate("element => element.outerHTML")
+                        except Exception:
+                            pass
                     else:
-                        break
-                        
-            except Exception:
-                # Fallback: If wait_for_selector timed out, check if the elements are actually present in the DOM anyway
-                fallback_locators = page.locator(css_selector).all()
-                for loc in fallback_locators:
-                    try:
-                        if loc.is_visible():
-                            html_content += loc.evaluate("element => element.outerHTML")
-                    except Exception:
-                        pass
-                else:
-                    # Truly failed to find anything
-                    print(f"\033[91mTimeout waiting for job elements for {company_name}.\033[0m")
+                        # Truly failed to find anything
+                        print(f"\033[91mTimeout waiting for job elements for {company_name}.\033[0m")
+            else:
+                # When job_container_class is empty, capture the full rendered page HTML directly
+                page.wait_for_timeout(4000)
+                html_content = page.content()
             
             # Fallback if no HTML was accumulated (or for non-paginated single-page sites)
             if not html_content:
@@ -180,12 +195,16 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
     soup = BeautifulSoup(html_content, 'html.parser')
     
     # Find standard links, nested links, or container div itself
-    job_elements = soup.select(f"a{css_selector}, {css_selector} a, {css_selector}")
+    if css_selector:
+        job_elements = soup.select(f"a{css_selector}, {css_selector} a, {css_selector}")
+    else:
+        link_selector = f'a[href*="{link_contains}"]' if link_contains else "a[href]"
+        job_elements = [a.find_parent("tr") or a for a in soup.select(link_selector)]
 
     if debug_mode["jobs_html"]:
-        print(f"DEBUG: selector={css_selector}, html_len={len(html_content)}, job_elements={len(job_elements)}")
+        print(f"{Colors.GREEN}DEBUG: selector={css_selector}, html_len={len(html_content)}, job_elements={len(job_elements)}{Colors.RESET}")
         if job_elements:
-            print("DEBUG: First element:", job_elements[0])
+            print(f"{Colors.GREEN}DEBUG: First element: {job_elements[0]}{Colors.RESET}")
     
     new_jobs_found = False
     seen_in_run = set()  # Prevent duplicate processing in a single run
@@ -299,12 +318,14 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
         card_full_text = job.get_text().lower()
         
         # Generic check driven by targets.json (no hardcoded company names)
-        if required_location:
-            if not any(loc in card_full_text for loc in [required_location]):
+        if required_locations:
+            if not any(loc.lower() in card_full_text for loc in required_locations):
+                if debug_mode["pagination"]:
+                    print(f"{Colors.GREEN}DEBUG: Skipped location: {title} | {card_full_text[:180]}{Colors.RESET}")
                 continue
 
         # Process the final link based on whether href was found or missing
-        if href:
+        if href and not href.strip().startswith('#'):
             if link_contains and link_contains not in href:
                 continue
             
@@ -316,8 +337,12 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class, job_link_pr
             else:
                 full_link = href
         else:
-            # Fallback if no href was found at all: use the general search URL
-            full_link = jobs_url
+            # Fallback if no href was found (or href is just '#'): attach requisition ID when available
+            req_match = re.search(r'requisition\s*id\s*:\s*([a-z0-9_-]+?)(?=\s*(?:work\s*locations|schedule|job\s*posting|$))', card_full_text, re.IGNORECASE)
+            if req_match:
+                full_link = f"{jobs_url}#req={req_match.group(1).upper()}"
+            else:
+                full_link = jobs_url
 
         # Create a unique identifier to prevent duplicate alerts
         job_id_string = f"{company_name}_{title}_{full_link}"
