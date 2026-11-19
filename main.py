@@ -19,7 +19,7 @@ def run_scraper_task(target, job_types, field_keywords, db_collection):
         scrape_company_jobs(
             company_name=target["company_name"],
             jobs_url=target["jobs_url"],
-            job_container_class=target["job_container_class"],
+            job_container_class=target.get("job_container_class", ""),
             job_link_prefix=target.get("job_link_prefix", ""),
             link_contains=target.get("link_contains", ""),
             job_types=job_types,

@@ -22,6 +22,10 @@ def scrape_company_jobs(company_name, jobs_url, job_container_class="", job_link
     """
     Scrapes a company's career page using Playwright to handle dynamic JavaScript loading.
     """
+    if debug_mode is None:
+        debug_mode = {"headless": True, "clicks": False, "jobs_html": False}
+
+        
     print(f"Starting scrape for {company_name}...")
     
     html_content = ""
